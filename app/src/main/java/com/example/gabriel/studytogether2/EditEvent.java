@@ -78,9 +78,14 @@ public class EditEvent extends AppCompatActivity {
 
         wve = new WeekViewEvent(100, name, year, month, day, startTimeHours, startTimeMinute, year, month, day, endTimeHour, endTimeMinute);
 
-        Intent intent = new Intent(this, MainActivity.class);
+        EditEnvelope ee = EditEnvelope.getInstance();
 
-        startActivity(intent);
+        ee.setEvent(wve);
+       // Intent intent = new Intent(this, MainActivity.class);
+
+        //startActivity(intent);
+
+        finish();
     }
 
     public void onRadioButtonClicked(View view) {

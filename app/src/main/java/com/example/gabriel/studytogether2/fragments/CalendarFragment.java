@@ -10,10 +10,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
+import com.example.gabriel.studytogether2.EditEnvelope;
 import com.example.gabriel.studytogether2.EditEvent;
 import com.example.gabriel.studytogether2.R;
 
@@ -163,5 +165,24 @@ public class CalendarFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        EditEnvelope ee = EditEnvelope.getInstance();
+        WeekViewEvent wve = ee.getEvent();
+
+        if (wve != null) {
+            wve.getName();
+
+            Context context = getContext();
+            CharSequence text = wve.getName();
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
     }
 }
