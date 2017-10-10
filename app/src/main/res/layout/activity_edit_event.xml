@@ -180,11 +180,13 @@
 
     </GridLayout>
 
-    <Button
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/et_date"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Pick Date"
-        android:onClick="showDatePickerDialog" />
+        android:focusable="false"
+        android:onClick="showDatePickerDialog"/>
 
     <EditText
         android:id="@+id/et_notes"
@@ -209,4 +211,11 @@
             android:text="I'm free"
             android:onClick="onRadioButtonClicked"/>
     </RadioGroup>
+
+    <Button
+        android:text="submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="submitEvent"/>
 </LinearLayout>
