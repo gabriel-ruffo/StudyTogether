@@ -89,6 +89,16 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mSectionsPagerAdapter != null) {
+            EditEnvelope.getInstance().resetCount();
+            mSectionsPagerAdapter.notifyDataSetChanged();
+        }
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -137,6 +147,12 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
             super(fm);
             calendarFragment = new CalendarFragment();
             extrasFragment = new ExtrasFragment();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            //return super.getItemPosition(object);
+            return POSITION_NONE;
         }
 
         @Override

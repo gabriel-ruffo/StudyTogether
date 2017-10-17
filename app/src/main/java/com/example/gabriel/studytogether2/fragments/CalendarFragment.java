@@ -7,20 +7,26 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.alamkanak.weekview.DateTimeInterpreter;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
+import com.alamkanak.weekview.WeekViewLoader;
 import com.example.gabriel.studytogether2.EditEnvelope;
 import com.example.gabriel.studytogether2.EditEvent;
 import com.example.gabriel.studytogether2.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,7 +46,11 @@ public class CalendarFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    //private static ArrayList<WeekViewEvent> eventList = new ArrayList<>();
+
     private OnFragmentInteractionListener mListener;
+
+    EditEnvelope ee = EditEnvelope.getInstance();
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -73,13 +83,20 @@ public class CalendarFragment extends Fragment {
         }
     }
 
+    WeekView mWeekView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        WeekView mWeekView = (WeekView) v.findViewById(R.id.weekView);
+        mWeekView = (WeekView) v.findViewById(R.id.weekView);
+
+        //eventList.add(new WeekViewEvent(100, "name", 2017, 10, 15, 7, 30, 2017, 10, 15, 8, 30));
+
+        mWeekView.setNumberOfVisibleDays(7);
+        mWeekView.setHourHeight(150);
 
         // Get a reference for the week view in the layout.
         //mWeekView = (WeekView) findViewById(R.id.weekView);
@@ -90,12 +107,54 @@ public class CalendarFragment extends Fragment {
             }
         };
 
+        mWeekView.setFirstDayOfWeek(8);
+
+        mWeekView.setShowNowLine(true);
+
+        DateTimeInterpreter myInterpreter = new DateTimeInterpreter() {
+            @Override
+            public String interpretDate(Calendar date) {
+                try {
+                    SimpleDateFormat sdf = 1 == 1 ? new SimpleDateFormat("EEEEE M/dd", Locale.getDefault()) : new SimpleDateFormat("E M/dd", Locale.getDefault());
+                    return sdf.format(date.getTime()).toUpperCase();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            }
+
+            @Override
+            public String interpretTime(int hour) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, 0);
+
+                try {
+                    SimpleDateFormat sdf = DateFormat.is24HourFormat(getContext()) ? new SimpleDateFormat("HH:mm", Locale.getDefault()) : new SimpleDateFormat("hh a", Locale.getDefault());
+                    return sdf.format(calendar.getTime());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "";
+                }
+            }
+        };
+
+        mWeekView.setDateTimeInterpreter(myInterpreter);
+
+
+
         MonthLoader.MonthChangeListener mMonthChangeListener = new MonthLoader.MonthChangeListener() {
             @Override
             public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
                 //List<WeekViewEvent> events = .getEvents(newYear, newMonth);
-                List<WeekViewEvent> events = new ArrayList<>();
-                return events;
+                //List<WeekViewEvent> events = CalendarFragment.getMyEvents();
+                //List<WeekViewEvent> events2 = new ArrayList<>();
+
+                if (ee.returnable()) {
+                    return ee.getEvents();
+                }
+
+                return new ArrayList<WeekViewEvent>();
             }
         };
 
@@ -105,6 +164,8 @@ public class CalendarFragment extends Fragment {
 
             }
         };
+
+
 
 // Set an action when any event is clicked.
         mWeekView.setOnEventClickListener(mEventClickListener);
@@ -170,19 +231,5 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        EditEnvelope ee = EditEnvelope.getInstance();
-        WeekViewEvent wve = ee.getEvent();
-
-        if (wve != null) {
-            wve.getName();
-
-            Context context = getContext();
-            CharSequence text = wve.getName();
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
-        }
     }
 }

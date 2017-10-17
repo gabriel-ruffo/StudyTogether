@@ -2,6 +2,9 @@ package com.example.gabriel.studytogether2;
 
 import com.alamkanak.weekview.WeekViewEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Charley on 10/10/17.
  */
@@ -9,7 +12,8 @@ import com.alamkanak.weekview.WeekViewEvent;
 public class EditEnvelope {
 
     private static EditEnvelope myObj;
-    private WeekViewEvent wve;
+    private static ArrayList<WeekViewEvent> eventList = new ArrayList<>();
+    int returnCount = 0;
 
     private EditEnvelope() {
 
@@ -24,17 +28,24 @@ public class EditEnvelope {
     }
 
     public void setEvent(WeekViewEvent wve) {
-        if (myObj != null) {
-            myObj.wve = wve;
+
+        if (wve != null) {
+            eventList.add(wve);
         }
+
     }
 
-    public WeekViewEvent getEvent() {
-        if (myObj != null) {
-            return myObj.wve;
-        }
+    public void resetCount() {
+        returnCount = 0;
+    }
 
-        return null;
+    public boolean returnable() {
+        return returnCount == 0;
+    }
+
+    public List<WeekViewEvent> getEvents() {
+        returnCount++;
+        return eventList;
     }
 
 }

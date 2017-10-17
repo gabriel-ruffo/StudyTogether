@@ -1,7 +1,9 @@
 package com.example.gabriel.studytogether2;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekViewEvent;
 
@@ -25,7 +28,11 @@ public class EditEvent extends AppCompatActivity {
 
     private int startTimeHours, startTimeMinute, endTimeHour, endTimeMinute, year, month, day;
     private String name, notes;
-    private boolean sun, mon, tues, wed, thurs, fri, sat, busy, rep;
+    private boolean sun, mon, tues, wed, thurs, fri, sat, rep;
+
+    private boolean busy = true;
+
+    private boolean validDate = false;
 
     private WeekViewEvent wve;
 
@@ -76,16 +83,64 @@ public class EditEvent extends AppCompatActivity {
     public void submitEvent(View view) {
         populateDateVariables();
 
-        wve = new WeekViewEvent(100, name, year, month, day, startTimeHours, startTimeMinute, year, month, day, endTimeHour, endTimeMinute);
+        if (validateVariables()) {
 
-        EditEnvelope ee = EditEnvelope.getInstance();
+            wve = new WeekViewEvent(100, name, year, month, day, startTimeHours, startTimeMinute, year, month, day, endTimeHour, endTimeMinute);
 
-        ee.setEvent(wve);
-       // Intent intent = new Intent(this, MainActivity.class);
+            if (busy) {
+                wve.setColor(Color.rgb(239, 147, 147));
+            }
 
-        //startActivity(intent);
+            EditEnvelope ee = EditEnvelope.getInstance();
 
-        finish();
+            ee.setEvent(wve);
+            // Intent intent = new Intent(this, MainActivity.class);
+
+            //startActivity(intent);
+
+            finish();
+        } else {
+            Context context = view.getContext();
+            CharSequence text = "Invalid input";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+    }
+
+    private boolean validateVariables() {
+        int tempStartHours = startTimeHours;
+        int tempEndHours = endTimeHour;
+
+        Spinner spinner_start = (Spinner) findViewById(R.id.spinner_start_ampm);
+        Spinner spinner_end = (Spinner) findViewById(R.id.spinner_end_ampm);
+
+
+        if (spinner_start.getSelectedItem().toString().equals("PM")) {
+            tempStartHours -= 12;
+        }
+
+        if (spinner_end.getSelectedItem().toString().equals("PM")) {
+            tempEndHours -= 12;
+        }
+
+
+        if (tempStartHours < 1 || tempStartHours > 12 ||
+                tempEndHours < 1 || tempEndHours > 12) {
+            return false;
+        }
+
+        if (startTimeMinute < 0 || startTimeMinute > 59 ||
+                endTimeMinute < 0 || endTimeMinute > 59) {
+            return false;
+        }
+
+        if (!validDate) {
+            return false;
+        }
+
+        return true;
     }
 
     public void onRadioButtonClicked(View view) {
@@ -133,38 +188,56 @@ public class EditEvent extends AppCompatActivity {
 
         EditText et_notes = (EditText) findViewById(R.id.et_notes);
 
-        name = tv_name.getText().toString();
 
-        startTimeHours = Integer.parseInt(et_startHour.getText().toString());
-        startTimeMinute = Integer.parseInt(et_startMinute.getText().toString());
-        if (spinner_start.getSelectedItem().toString().equals("PM")) {
-            startTimeHours += 12;
+        try {
+
+            name = tv_name.getText().toString();
+
+            startTimeHours = Integer.parseInt(et_startHour.getText().toString());
+            startTimeMinute = Integer.parseInt(et_startMinute.getText().toString());
+            if (spinner_start.getSelectedItem().toString().equals("PM")) {
+                startTimeHours += 12;
+            }
+
+            endTimeHour = Integer.parseInt(et_endHour.getText().toString());
+            endTimeMinute = Integer.parseInt(et_endMinute.getText().toString());
+            if (spinner_end.getSelectedItem().toString().equals("PM")) {
+                endTimeHour += 12;
+            }
+
+            parseDate(et_date.getText().toString());
+
+            rep = repeat.isChecked();
+            sun = sunday.isChecked();
+            mon = monday.isChecked();
+            tues = tuesday.isChecked();
+            wed = wednesday.isChecked();
+            thurs = thursday.isChecked();
+            fri = friday.isChecked();
+            sat = saturday.isChecked();
+
+            notes = et_notes.getText().toString();
+        } catch (Exception e) {
+           /* Context context = getBaseContext();
+            CharSequence text = "Invalid input";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();*/
+
+           //toast will be shown later
         }
-
-        endTimeHour = Integer.parseInt(et_endHour.getText().toString());
-        endTimeMinute = Integer.parseInt(et_endMinute.getText().toString());
-        if (spinner_end.getSelectedItem().toString().equals("PM")) {
-            endTimeHour += 12;
-        }
-
-        parseDate(et_date.getText().toString());
-
-        rep = repeat.isChecked();
-        sun = sunday.isChecked();
-        mon = monday.isChecked();
-        tues = tuesday.isChecked();
-        wed = wednesday.isChecked();
-        thurs = thursday.isChecked();
-        fri = friday.isChecked();
-        sat = saturday.isChecked();
-
-        notes = et_notes.getText().toString();
     }
 
     private void parseDate(String date) {
         String[] split_date = date.split("/");
-        month = Integer.parseInt(split_date[0]);
-        day = Integer.parseInt(split_date[1]);
-        year = Integer.parseInt("20" + split_date[2]);
+        if (split_date.length < 3) {
+            validDate = false;
+        } else {
+            month = Integer.parseInt(split_date[0]);
+            day = Integer.parseInt(split_date[1]);
+            year = Integer.parseInt("20" + split_date[2]);
+            validDate = true;
+        }
     }
 }
