@@ -1,5 +1,7 @@
 package com.example.gabriel.studytogether2;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -18,12 +20,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.gabriel.studytogether2.fragments.CalendarFragment;
 import com.example.gabriel.studytogether2.fragments.ExtrasFragment;
+import com.example.gabriel.studytogether2.fragments.GroupFragment;
+import com.example.gabriel.studytogether2.fragments.dummy.DummyContent;
+import com.example.gabriel.studytogether2.groupActivities.ChatActivity;
 
-public class MainActivity extends AppCompatActivity implements CalendarFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements CalendarFragment.OnFragmentInteractionListener, GroupFragment.OnListFragmentInteractionListener
+{
     //small change
+
+    private Toast toastMsg;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -99,6 +108,22 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         }
     }
 
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+
+        Context context = MainActivity.this;
+
+        Class destinationActivity = ChatActivity.class;
+
+        Intent startChildActivityIntent = new Intent(context, destinationActivity);
+
+        startChildActivityIntent.putExtra("ID", item.id);
+        startChildActivityIntent.putExtra("Content", item.content);
+        startChildActivityIntent.putExtra("Details", item.details);
+
+        startActivity(startChildActivityIntent);
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -142,11 +167,13 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
         private CalendarFragment calendarFragment;
         private ExtrasFragment extrasFragment;
+        private GroupFragment groupFragment;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
             calendarFragment = new CalendarFragment();
             extrasFragment = new ExtrasFragment();
+            groupFragment = new GroupFragment();
         }
 
         @Override
@@ -170,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
                 case 0:
                     return PlaceholderFragment.newInstance(position);
                 case 1:
-                    return PlaceholderFragment.newInstance(position);
+                    return groupFragment;
                 case 2:
                     return calendarFragment.newInstance("", "");
                 case 3:
