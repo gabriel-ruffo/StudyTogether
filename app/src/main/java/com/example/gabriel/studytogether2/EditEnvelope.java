@@ -13,7 +13,10 @@ public class EditEnvelope {
 
     private static EditEnvelope myObj;
     private static ArrayList<WeekViewEvent> eventList = new ArrayList<>();
+    //private static WeekViewEvent tempEvent;
     int returnCount = 0;
+    long id = 100;
+    long event;
 
     private EditEnvelope() {
 
@@ -27,12 +30,45 @@ public class EditEnvelope {
         return myObj;
     }
 
-    public void setEvent(WeekViewEvent wve) {
+    public void addEvent(WeekViewEvent wve) {
+        wve.setId(id);
+        id++;
 
         if (wve != null) {
             eventList.add(wve);
         }
 
+    }
+
+    public void updateEvent(WeekViewEvent wve) {
+
+        for (int i = 0; i < eventList.size(); i++) {
+            if (eventList.get(i).getId() == event) {
+                eventList.remove(i);
+            }
+        }
+        wve.setId(event);
+        event = 0;
+
+        eventList.add(wve);
+    }
+
+    public void setEvent(WeekViewEvent wve) {
+        //tempEvent = wve;
+        event = wve.getId();
+
+    }
+
+    public WeekViewEvent getEvent() {
+        if (event > 99) {
+            for (int i = 0; i < eventList.size(); i++) {
+                if (eventList.get(i).getId() == event) {
+                    return eventList.get(i);
+                }
+            }
+        }
+
+        return null;
     }
 
     public void resetCount() {

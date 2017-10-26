@@ -103,7 +103,11 @@ public class CalendarFragment extends Fragment {
         WeekView.EventClickListener mEventClickListener = new WeekView.EventClickListener() {
             @Override
             public void onEventClick(WeekViewEvent event, RectF eventRect) {
+                ee.setEvent(event);
 
+                Intent newEvent = new Intent(getActivity(), EditEvent.class);
+                newEvent.putExtra("EDIT_EXISTING", true);
+                startActivity(newEvent);
             }
         };
 
@@ -182,6 +186,7 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent newEvent = new Intent(getActivity(), EditEvent.class);
+                newEvent.putExtra("EDIT_EXISTING", false);
                 startActivity(newEvent);
             }
         });
