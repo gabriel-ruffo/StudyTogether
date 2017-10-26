@@ -19,23 +19,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-
         <activity android:name=".extrasActivities.HelpActivity" />
         <activity android:name=".extrasActivities.ProfileActivity" />
-        <activity android:name=".extrasActivities.SettingsActivity"
-            android:parentActivityName=".MainActivity">
+        <activity android:name=".extrasActivities.SettingsActivity" />
+        <activity android:name=".EditEvent" />
+        <activity
+            android:name=".groupActivities.ChatActivity"
+
+            android:parentActivityName="com.example.gabriel.studytogether2.MainActivity" >
+            <!-- The meta-data element is needed for versions lower than 4.1 -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
-        </activity>
-        <activity android:name=".EditEvent"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".MainActivity"/>
-        </activity>
+                android:value="com.example.gabriel.studytogether2.MainActivity" />
+            </activity>
+        <activity android:name=".groupActivities.GroupInfoActivity"></activity>
     </application>
 
 </manifest>
