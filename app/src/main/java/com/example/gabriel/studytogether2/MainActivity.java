@@ -98,13 +98,19 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
     }
 
+    public void refreshCalendar() {
+        if (mSectionsPagerAdapter != null) {
+            mSectionsPagerAdapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
         if (mSectionsPagerAdapter != null) {
-            /*EditEnvelope.getInstance().resetCount();
-            mSectionsPagerAdapter.notifyDataSetChanged();*/
+            //ditEnvelope.getInstance().resetCount();
+            mSectionsPagerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -199,7 +205,10 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
                 case 1:
                     return groupFragment;
                 case 2:
-                    return calendarFragment.newInstance("", "");
+                    CalendarFragment c = new CalendarFragment();
+                    c.secAdaptor = mSectionsPagerAdapter;
+                    return c;
+                    //return calendarFragment.newInstance("", "");
                 case 3:
                     return extrasFragment;
             }

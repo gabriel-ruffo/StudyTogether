@@ -1,5 +1,7 @@
 package com.example.gabriel.studytogether2;
 
+import com.alamkanak.weekview.WeekViewEvent;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -37,13 +39,22 @@ public class DatabaseAccess {
                         + rs.getString(5) + "**" + rs.getString(6) + "**"
                         + rs.getString(7) + "**" + rs.getString(8))+ "::";
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
         return csvRS;
+    }
+
+    public void insertNewWeekViewEvent(/*thousand params*/) {
+        try {
+            Statement stmt = connection.createStatement();
+            String insert_query = "INSERT INTO single_event ";
+            insert_query += " VALUES (,,,,,,)";
+            stmt.executeUpdate(insert_query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // comment out later

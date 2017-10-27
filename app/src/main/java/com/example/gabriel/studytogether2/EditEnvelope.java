@@ -21,6 +21,7 @@ public class EditEnvelope {
     }
 
     public ArrayList<WeekViewEvent> populateEvents() {
+        eventList = new ArrayList<>();
         dba = new DatabaseAccess();
         String allEvents_raw = dba.getAllSingleEvents();
         String[] allEvents = allEvents_raw.split("::");

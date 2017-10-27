@@ -22,6 +22,7 @@ import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.example.gabriel.studytogether2.EditEnvelope;
 import com.example.gabriel.studytogether2.EditEvent;
+import com.example.gabriel.studytogether2.MainActivity;
 import com.example.gabriel.studytogether2.R;
 
 import java.text.SimpleDateFormat;
@@ -47,6 +48,8 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
     private ArrayList<WeekViewEvent> listOfAllEvents = new ArrayList<>();
 
     private static final int DB_LOADER = 22;
+
+    public MainActivity.SectionsPagerAdapter secAdaptor;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -158,19 +161,21 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
                 //List<WeekViewEvent> events = .getEvents(newYear, newMonth);
                 //List<WeekViewEvent> events = CalendarFragment.getMyEvents();
                 //List<WeekViewEvent> events2 = new ArrayList<>();
-
                 //ee.populateEvents();
+
                 // TODO(3): this starts the second thread, charles
-                setUpLoader();
 //                if (listOfAllEvents != null)
 //                    return listOfAllEvents;
+               // Toast.makeText(getContext(), "before if", Toast.LENGTH_LONG);
+
+                if (listOfAllEvents.size() > 0) {
+                   // Toast.makeText(getContext(), "in if", Toast.LENGTH_LONG);
+                    return listOfAllEvents;
+                }
+
+                setUpLoader();
 
                 return new ArrayList<>();
-//
-//                if (ee.returnable()) {
-//                    return ee.getEvents();
-//                }
-//
             }
         };
 
@@ -272,11 +277,11 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<ArrayList<WeekViewEvent>> loader, ArrayList<WeekViewEvent> data) {
         listOfAllEvents = data;
         Toast.makeText(getContext(), listOfAllEvents.get(0).getName(), Toast.LENGTH_LONG).show();
+        secAdaptor.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<ArrayList<WeekViewEvent>> loader) {
-
     }
 
 
