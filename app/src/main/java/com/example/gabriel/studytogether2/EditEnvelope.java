@@ -3,72 +3,64 @@ package com.example.gabriel.studytogether2;
 import com.alamkanak.weekview.WeekViewEvent;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-
 /**
  * Created by Charley on 10/10/17.
  */
 
 public class EditEnvelope {
-
-    private static EditEnvelope myObj;
     private static ArrayList<WeekViewEvent> eventList = new ArrayList<>();
+
+    private DatabaseAccess dba;
+
     //private static WeekViewEvent tempEvent;
-    int returnCount = 0;
-    long id = 100;
-    long event;
+    private int returnCount = 0;
 
-    private EditEnvelope() {
-
+    public EditEnvelope() {
     }
 
-    public static EditEnvelope getInstance() {
-        if (myObj == null) {
-            myObj = new EditEnvelope();
+    public ArrayList<WeekViewEvent> populateEvents() {
+        dba = new DatabaseAccess();
+        String allEvents_raw = dba.getAllSingleEvents();
+        String[] allEvents = allEvents_raw.split("::");
+        String[] temp;
+        WeekViewEvent eventToAdd;
+        Calendar startTime;
+        Calendar endTime;
+
+        for (int i = 0; i < allEvents.length; i++) {
+            temp = allEvents[i].split("\\*\\*");
+
+            // populate start and end time calendar objects
+            startTime = populateStartCalendar(temp[2], temp[4]);
+            endTime = populateStartCalendar(temp[2], temp[5]);
+            eventToAdd = new WeekViewEvent(Long.parseLong(temp[0]), temp[1], startTime, endTime);
+            // logic to create a new event
+            addEvent(eventToAdd);
         }
 
-        return myObj;
+        return eventList;
+    }
+
+    private Calendar populateStartCalendar(String dateYMD, String time) {
+        Calendar temp = Calendar.getInstance();
+        String[] split_year = dateYMD.split("-");
+        String[] split_time = time.split(":");
+
+        temp.set(Calendar.YEAR, Integer.parseInt(split_year[0]));
+        temp.set(Calendar.MONTH, Integer.parseInt(split_year[1]));
+        temp.set(Calendar.DAY_OF_MONTH, Integer.parseInt(split_year[2]));
+        temp.set(Calendar.HOUR_OF_DAY, Integer.parseInt(split_time[0]));
+        temp.set(Calendar.MINUTE, Integer.parseInt(split_time[1]));
+
+        return temp;
     }
 
     public void addEvent(WeekViewEvent wve) {
-        wve.setId(id);
-        id++;
-
         if (wve != null) {
             eventList.add(wve);
         }
-
-    }
-
-    public void updateEvent(WeekViewEvent wve) {
-
-        for (int i = 0; i < eventList.size(); i++) {
-            if (eventList.get(i).getId() == event) {
-                eventList.remove(i);
-            }
-        }
-        wve.setId(event);
-        event = 0;
-
-        eventList.add(wve);
-    }
-
-    public void setEvent(WeekViewEvent wve) {
-        //tempEvent = wve;
-        event = wve.getId();
-
-    }
-
-    public WeekViewEvent getEvent() {
-        if (event > 99) {
-            for (int i = 0; i < eventList.size(); i++) {
-                if (eventList.get(i).getId() == event) {
-                    return eventList.get(i);
-                }
-            }
-        }
-
-        return null;
     }
 
     public void resetCount() {

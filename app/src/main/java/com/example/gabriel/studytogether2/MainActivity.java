@@ -103,8 +103,8 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         super.onResume();
 
         if (mSectionsPagerAdapter != null) {
-            EditEnvelope.getInstance().resetCount();
-            mSectionsPagerAdapter.notifyDataSetChanged();
+            /*EditEnvelope.getInstance().resetCount();
+            mSectionsPagerAdapter.notifyDataSetChanged();*/
         }
     }
 

@@ -115,8 +115,9 @@ public class EditEvent extends AppCompatActivity {
             }
         };
 
+
         if (editExisting) {
-            populateFields(EditEnvelope.getInstance().getEvent());
+            //populateFields(EditEnvelope.getInstance().getEvent());
         }
     }
 
@@ -191,12 +192,12 @@ public class EditEvent extends AppCompatActivity {
                 wve.setColor(Color.rgb(239, 147, 147));
             }
 
-            EditEnvelope ee = EditEnvelope.getInstance();
+            EditEnvelope ee = new EditEnvelope();
 
             if (editExisting) {
-                ee.updateEvent(wve);
+               // ee.updateEvent(wve);
             } else {
-                ee.addEvent(wve);
+              //  ee.addEvent(wve);
             }
             // Intent intent = new Intent(this, MainActivity.class);
 
