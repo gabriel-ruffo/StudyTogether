@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1077100667213",
+    "project_id": "firebase-studytogether2"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077100667213:android:a68a3edde828098b",
+        "android_client_info": {
+          "package_name": "com.example.gabriel.studytogether2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077100667213-8m8jqjrbc9fbhta7ggvg7c41tgb030ei.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1077100667213-9suv94kbds5fd41f84ho9lelpgkllhg6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gabriel.studytogether2",
+            "certificate_hash": "a317ab2af6e7f40b8325c15ef6ceb873be667811"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFYv1jG8_hXA2IMNmMFn3zZBSXcj4fLHs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

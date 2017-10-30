@@ -13,11 +13,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".extrasActivities.HelpActivity" />
         <activity android:name=".extrasActivities.ProfileActivity" />
@@ -25,14 +21,21 @@
         <activity android:name=".EditEvent" />
         <activity
             android:name=".groupActivities.ChatActivity"
+            android:parentActivityName=".MainActivity">
 
-            android:parentActivityName="com.example.gabriel.studytogether2.MainActivity" >
             <!-- The meta-data element is needed for versions lower than 4.1 -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.gabriel.studytogether2.MainActivity" />
-            </activity>
-        <activity android:name=".groupActivities.GroupInfoActivity"></activity>
+        </activity>
+        <activity android:name=".groupActivities.GroupInfoActivity" />
+        <activity android:name=".SignInActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
