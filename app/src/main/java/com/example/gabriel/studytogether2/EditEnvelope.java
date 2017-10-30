@@ -1,5 +1,7 @@
 package com.example.gabriel.studytogether2;
 
+import android.graphics.Color;
+
 import com.alamkanak.weekview.WeekViewEvent;
 
 import java.util.ArrayList;
@@ -20,10 +22,16 @@ public class EditEnvelope {
     public EditEnvelope() {
     }
 
-    public ArrayList<WeekViewEvent> populateEvents() {
+    public ArrayList<WeekViewEvent> populateEvents(boolean isSingle, long id) {
         eventList = new ArrayList<>();
-        dba = new DatabaseAccess();
-        String allEvents_raw = dba.getAllSingleEvents();
+        //if (dba == null)
+            dba = new DatabaseAccess();
+        String allEvents_raw = "";
+        if (isSingle) {
+            allEvents_raw = dba.getSingleEvent(id);
+        } else {
+            allEvents_raw = dba.getAllSingleEvents();
+        }
         String[] allEvents = allEvents_raw.split("::");
         String[] temp;
         WeekViewEvent eventToAdd;
@@ -38,6 +46,10 @@ public class EditEnvelope {
             endTime = populateStartCalendar(temp[2], temp[5]);
             eventToAdd = new WeekViewEvent(Long.parseLong(temp[0]), temp[1], startTime, endTime);
             // logic to create a new event
+
+            if (temp[6].equals("Y"))
+                eventToAdd.setColor(Color.rgb(239, 147, 147));
+
             addEvent(eventToAdd);
         }
 

@@ -20,6 +20,7 @@ import com.alamkanak.weekview.DateTimeInterpreter;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
+import com.example.gabriel.studytogether2.DBMediumGet;
 import com.example.gabriel.studytogether2.EditEnvelope;
 import com.example.gabriel.studytogether2.EditEvent;
 import com.example.gabriel.studytogether2.MainActivity;
@@ -112,7 +113,11 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
         WeekView.EventClickListener mEventClickListener = new WeekView.EventClickListener() {
             @Override
             public void onEventClick(WeekViewEvent event, RectF eventRect) {
+                DBMediumGet dbm = ((MainActivity) getActivity()).dbm;
+                dbm.resetEdit(event.getId());
+                dbm.refreshList();
                 /*ee.setEvent(event);
+
 
                 Intent newEvent = new Intent(getActivity(), EditEvent.class);
                 newEvent.putExtra("EDIT_EXISTING", true);
@@ -168,14 +173,23 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
 //                    return listOfAllEvents;
                // Toast.makeText(getContext(), "before if", Toast.LENGTH_LONG);
 
-                if (listOfAllEvents.size() > 0) {
+                /*if (listOfAllEvents.size() > 0) {
                    // Toast.makeText(getContext(), "in if", Toast.LENGTH_LONG);
                     return listOfAllEvents;
-                }
+                }*/
+                DBMediumGet dbm = ((MainActivity) getActivity()).dbm;
 
-                setUpLoader();
+                /*if (dbm.needsRefresh()) {
+                    dbm.refreshList();
+                    mWeekView.notifyDatasetChanged();
+                }*/
 
-                return new ArrayList<>();
+                //dbm.refreshList();
+
+                return dbm.getEvents();
+                //setUpLoader();
+
+                //return new ArrayList<>();
             }
         };
 
@@ -261,7 +275,7 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
 
             @Override
             public ArrayList<WeekViewEvent> loadInBackground() {
-                query = ee.populateEvents();
+                query = new ArrayList<>();//ee.populateEvents();
                 return query;
             }
 
@@ -277,7 +291,9 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<ArrayList<WeekViewEvent>> loader, ArrayList<WeekViewEvent> data) {
         listOfAllEvents = data;
         Toast.makeText(getContext(), listOfAllEvents.get(0).getName(), Toast.LENGTH_LONG).show();
-        secAdaptor.notifyDataSetChanged();
+
+        ((MainActivity) getActivity()).refreshCalendar();
+        //secAdaptor.notifyDataSetChanged();
     }
 
     @Override
@@ -298,10 +314,5 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 }

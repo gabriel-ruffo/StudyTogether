@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekViewEvent;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -117,17 +118,20 @@ public class EditEvent extends AppCompatActivity {
 
 
         if (editExisting) {
-            //populateFields(EditEnvelope.getInstance().getEvent());
+            populateFields(getIntent().getExtras());
+            //tv_name.setText(getIntent().getExtras().getString("NAME"));
+
+
         }
     }
 
-    private void populateFields(WeekViewEvent wve) {
-        tv_name.setText(wve.getName());
+    private void populateFields(Bundle bundle) {
+        tv_name.setText(bundle.getString("NAME"));
 
-        int startHour = wve.getStartTime().get(Calendar.HOUR_OF_DAY);
-        int startMinute = wve.getStartTime().get(Calendar.MINUTE);
-        int endHour = wve.getEndTime().get(Calendar.HOUR_OF_DAY);
-        int endMinute = wve.getEndTime().get(Calendar.MINUTE);
+        int startHour = bundle.getInt("START_HOUR");
+        int startMinute = bundle.getInt("START_MINUTE");
+        int endHour = bundle.getInt("END_HOUR");
+        int endMinute = bundle.getInt("END_MINUTE");
 
         if (startHour > 12) {
             spinner_start.setSelection(1);
@@ -147,9 +151,9 @@ public class EditEvent extends AppCompatActivity {
         et_endHour.setText("" + endHour);
         et_endMinute.setText("" + endMinute);
 
-        int tempYear = wve.getStartTime().get(Calendar.YEAR);
-        int tempMonth = wve.getStartTime().get(Calendar.MONTH);
-        int tempDay = wve.getStartTime().get(Calendar.DAY_OF_MONTH);
+        int tempYear = bundle.getInt("YEAR");
+        int tempMonth = bundle.getInt("MONTH");
+        int tempDay = bundle.getInt("DAY");
 
         calendar.set(Calendar.YEAR, tempYear);
         calendar.set(Calendar.MONTH, tempMonth);
@@ -166,10 +170,17 @@ public class EditEvent extends AppCompatActivity {
     }
 
     public void showDatePickerDialog(View v) {
-        new DatePickerDialog(EditEvent.this, date,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show();
+        if (editExisting) {
+            new DatePickerDialog(EditEvent.this, date,
+                    getIntent().getExtras().getInt("YEAR"),
+                    getIntent().getExtras().getInt("MONTH"),
+                    getIntent().getExtras().getInt("DAY")).show();
+        } else {
+            new DatePickerDialog(EditEvent.this, date,
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)).show();
+        }
 //        DialogFragment newFragment = new DatePickerFragment();
 //        newFragment.show(getSupportFragmentManager(), "datePicker");
     }
@@ -194,10 +205,20 @@ public class EditEvent extends AppCompatActivity {
 
             EditEnvelope ee = new EditEnvelope();
 
+            String tempBusy = "N";
+            if (busy)
+                tempBusy = "Y";
+
+
             if (editExisting) {
                // ee.updateEvent(wve);
+                DBMediumUpdate dbmu = new DBMediumUpdate();
+                dbmu.update(name, "" + year + "-" + month + "-" + day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes, getIntent().getExtras().getLong("ID"));
             } else {
               //  ee.addEvent(wve);
+                DBMediumInsert dbmi = new DBMediumInsert();
+                dbmi.insert(name, "" + year + "-" + month + "-" + day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes);
+                //dbAccess.insertNewWeekViewEvent(name, "" + year + "-" + month + "-" + day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes);
             }
             // Intent intent = new Intent(this, MainActivity.class);
 
@@ -225,14 +246,18 @@ public class EditEvent extends AppCompatActivity {
         if (spinner_start.getSelectedItem().toString().equals("PM")) {
             tempStartHours -= 12;
         }
+        if (tempStartHours % 12 == 0)
+            tempStartHours -= 12;
 
         if (spinner_end.getSelectedItem().toString().equals("PM")) {
             tempEndHours -= 12;
         }
+        if (tempEndHours % 12 == 0)
+            tempEndHours -= 12;
 
 
-        if (tempStartHours < 1 || tempStartHours > 12 ||
-                tempEndHours < 1 || tempEndHours > 12) {
+        if (tempStartHours < 0 || tempStartHours > 12 ||
+                tempEndHours < 0 || tempEndHours > 12) {
             return false;
         }
 
@@ -280,12 +305,16 @@ public class EditEvent extends AppCompatActivity {
             if (spinner_start.getSelectedItem().toString().equals("PM")) {
                 startTimeHours += 12;
             }
+            if (startTimeHours % 12 == 0)
+                startTimeHours -= 12;
 
             endTimeHour = Integer.parseInt(et_endHour.getText().toString());
             endTimeMinute = Integer.parseInt(et_endMinute.getText().toString());
             if (spinner_end.getSelectedItem().toString().equals("PM")) {
                 endTimeHour += 12;
             }
+            if (endTimeHour % 12 == 0)
+                endTimeHour -= 12;
 
             parseDate(et_date.getText().toString());
 
