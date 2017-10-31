@@ -185,8 +185,9 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
                 }*/
 
                 //dbm.refreshList();
+                ArrayList<WeekViewEvent> tempList = dbm.getEvents(newMonth);
 
-                return dbm.getEvents();
+                return tempList;
                 //setUpLoader();
 
                 //return new ArrayList<>();

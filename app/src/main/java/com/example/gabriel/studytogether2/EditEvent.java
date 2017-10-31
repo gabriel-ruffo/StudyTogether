@@ -5,11 +5,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -69,6 +73,8 @@ public class EditEvent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
 
+        getSupportActionBar().setTitle("Edit Text");
+
         editExisting = getIntent().getExtras().getBoolean("EDIT_EXISTING");
 
         dbAccess = new DatabaseAccess();
@@ -125,6 +131,27 @@ public class EditEvent extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_edit, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_save) {
+            submitEvent(findViewById(R.id.ac_ed));
+            return true;
+        } else if (id == R.id.action_delete) {
+            deleteEvent();
+            return true;
+        }
+        return false;
+    }
+
     private void populateFields(Bundle bundle) {
         tv_name.setText(bundle.getString("NAME"));
 
@@ -133,18 +160,24 @@ public class EditEvent extends AppCompatActivity {
         int endHour = bundle.getInt("END_HOUR");
         int endMinute = bundle.getInt("END_MINUTE");
 
-        if (startHour > 12) {
+        if (startHour > 11) {
             spinner_start.setSelection(1);
             startHour -= 12;
         }
 
+        if (startHour == 0)
+            startHour = 12;
+
         et_startHour.setText("" + startHour);
         et_startMinute.setText("" + startMinute);
 
-        if (endHour > 12) {
+        if (endHour > 11) {
             spinner_end.setSelection(1);
             endHour -= 12;
         }
+
+        if (endHour == 0)
+            endHour = 12;
 
         //calendar.set;
 
@@ -168,6 +201,19 @@ public class EditEvent extends AppCompatActivity {
         //RadioButton rf = (RadioButton) findViewById(R.id.radio_free);
 
     }
+    boolean visible = false;
+
+    public void toggleRepeat(View view) {
+        GridLayout tempGrid = (GridLayout) findViewById(R.id.gl_days);
+
+        if (visible) {
+            tempGrid.setVisibility(View.GONE);
+        } else {
+            tempGrid.setVisibility(View.VISIBLE);
+        }
+
+        visible = !visible;
+    }
 
     public void showDatePickerDialog(View v) {
         if (editExisting) {
@@ -190,6 +236,15 @@ public class EditEvent extends AppCompatActivity {
         SimpleDateFormat sfd = new SimpleDateFormat(dateFormat, Locale.US);
         EditText date = (EditText) findViewById(R.id.et_date);
         date.setText(sfd.format(calendar.getTime()));
+    }
+
+    public void deleteEvent() {
+        if (editExisting) {
+            DBMediumDelete dbmd = new DBMediumDelete();
+            dbmd.delete(getIntent().getExtras().getLong("ID"));
+        }
+
+        finish();
     }
 
     public void submitEvent(View view) {
@@ -246,14 +301,14 @@ public class EditEvent extends AppCompatActivity {
         if (spinner_start.getSelectedItem().toString().equals("PM")) {
             tempStartHours -= 12;
         }
-        if (tempStartHours % 12 == 0)
-            tempStartHours -= 12;
+        /*if (tempStartHours % 12 == 0)
+            tempStartHours -= 12;*/
 
         if (spinner_end.getSelectedItem().toString().equals("PM")) {
             tempEndHours -= 12;
         }
-        if (tempEndHours % 12 == 0)
-            tempEndHours -= 12;
+        /*if (tempEndHours % 12 == 0)
+            tempEndHours -= 12;*/
 
 
         if (tempStartHours < 0 || tempStartHours > 12 ||

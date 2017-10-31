@@ -23,7 +23,13 @@
         <activity android:name=".extrasActivities.HelpActivity" />
         <activity android:name=".extrasActivities.ProfileActivity" />
         <activity android:name=".extrasActivities.SettingsActivity" />
-        <activity android:name=".EditEvent" />
+        <activity android:name=".EditEvent"
+            android:parentActivityName=".MainActivity" >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.gabriel.studytogether2.MainActivity" />
+        </activity>
         <activity
             android:name=".groupActivities.ChatActivity"
 
@@ -32,7 +38,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.gabriel.studytogether2.MainActivity" />
-            </activity>
+        </activity>
         <activity android:name=".groupActivities.GroupInfoActivity"></activity>
     </application>
 

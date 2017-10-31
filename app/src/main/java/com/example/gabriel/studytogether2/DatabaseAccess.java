@@ -90,12 +90,26 @@ public class DatabaseAccess {
         return 0;
     }
 
+    public int deleteWeekViewEvent(long id) {
+        try {
+            Statement stmt = connection.createStatement();
+            String delete_query = "DELETE from single_event ";
+            delete_query += "WHERE event_id=" + id;
+            int i = stmt.executeUpdate(delete_query);
+            return i;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     // TODO: Pass in actual 'day' argument, right now it's always 'M'
     public int insertNewWeekViewEvent(String name, String date, String day, String time_start, String time_end, String busy, String notes) {
         try {
             Statement stmt = connection.createStatement();
-            String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes)";
-            insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\")";
+            long tempid = 100;
+            String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes, schedule_id)";
+            insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + tempid + "\")";
             int i = stmt.executeUpdate(insert_query);
             return i;
         } catch (SQLException e) {

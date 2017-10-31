@@ -11,6 +11,7 @@ import com.alamkanak.weekview.WeekViewEvent;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * Created by Charley on 10/27/17.
@@ -21,6 +22,7 @@ public class DBMediumGet implements LoaderManager.LoaderCallbacks<ArrayList<Week
     MainActivity mainActivity;
     MainActivityContainer mac;
     ArrayList<WeekViewEvent> eventList;
+    HashMap<Integer, ArrayList<WeekViewEvent>> eventMap;
     private static final int DB_LOADER = 22;
     private long queryid;
     int returnCount;
@@ -32,6 +34,7 @@ public class DBMediumGet implements LoaderManager.LoaderCallbacks<ArrayList<Week
         mac = MainActivityContainer.getInstance();
         this.mainActivity = mac.getMainActivity();
         eventList = new ArrayList<>();
+        eventMap = new HashMap<>();
         needsRefresh = true;
         editExisting = false;
         returnCount = -1;
@@ -43,6 +46,7 @@ public class DBMediumGet implements LoaderManager.LoaderCallbacks<ArrayList<Week
 
     public void refreshList() {
         eventList = new ArrayList<>();
+        eventMap = new HashMap<>();
 
         LoaderManager loaderManager = mainActivity.getSupportLoaderManager();
         Loader<String> loader = loaderManager.getLoader(DB_LOADER);
@@ -55,14 +59,35 @@ public class DBMediumGet implements LoaderManager.LoaderCallbacks<ArrayList<Week
         needsRefresh = false;
     }
 
-    public ArrayList<WeekViewEvent> getEvents() {
-        returnCount++;
+    public ArrayList<WeekViewEvent> getEvents(int month) {
+        /*returnCount++;
         if (returnCount > 0 && returnCount < 5)
-            return new ArrayList<>();
+            return new ArrayList<>();*/
+
+        /*ArrayList<WeekViewEvent> oct = new ArrayList<>();
+        ArrayList<WeekViewEvent> sep = new ArrayList<>();
+        ArrayList<WeekViewEvent> nov = new ArrayList<>();
+
+        sep.add(new WeekViewEvent(1, "september", 2017, 8, 31, 1, 0, 2017, 8, 31, 4, 0));
+        oct.add(new WeekViewEvent(2, "october", 2017, 9, 31, 1, 0, 2017, 9, 31, 4, 0));
+        nov.add(new WeekViewEvent(3, "november", 2017, 10, 31, 1, 0, 2017, 10, 31, 4, 0));
+
+        if (month == 9)
+            return sep;
+        if (month == 10)
+            return oct;
+        if (month == 11)
+            return nov;*/
 
         //returnCount++;
+        ArrayList<WeekViewEvent> tempList = eventMap.get(month);
 
-        return eventList;
+        if (tempList == null)
+            return new ArrayList<>();
+
+        return tempList;
+
+        //return eventList;
     }
 
     public boolean needsRefresh() {
@@ -139,16 +164,38 @@ public class DBMediumGet implements LoaderManager.LoaderCallbacks<ArrayList<Week
             mainActivity.startActivity(newEvent);
         } else {
             for (WeekViewEvent wve : data) {
-                WeekViewEvent temp = new WeekViewEvent(wve.getId(), wve.getName(), wve.getStartTime().get(Calendar.YEAR), wve.getStartTime().get(Calendar.MONTH), wve.getStartTime().get(Calendar.DAY_OF_MONTH), wve.getStartTime().get(Calendar.HOUR_OF_DAY), wve.getStartTime().get(Calendar.MINUTE),
-                        wve.getEndTime().get(Calendar.YEAR), wve.getEndTime().get(Calendar.MONTH), wve.getEndTime().get(Calendar.DAY_OF_MONTH), wve.getEndTime().get(Calendar.HOUR_OF_DAY), wve.getEndTime().get(Calendar.MINUTE));
+                long id = wve.getId();
+                String name = wve.getName();
+                int year = wve.getStartTime().get(Calendar.YEAR);
+                int month = wve.getStartTime().get(Calendar.MONTH) + 1;
+                int startday = wve.getStartTime().get(Calendar.DAY_OF_MONTH);
+                int starthour = wve.getStartTime().get(Calendar.HOUR_OF_DAY);
+                int startminute = wve.getStartTime().get(Calendar.MINUTE);
+                int endday = wve.getEndTime().get(Calendar.DAY_OF_MONTH);
+                int endhour = wve.getEndTime().get(Calendar.HOUR_OF_DAY);
+                int endminute = wve.getEndTime().get(Calendar.MINUTE);
+
+
+                //int monthValue = wve.getStartTime().get(Calendar.MONTH);
+                ArrayList<WeekViewEvent> tempList = eventMap.get(month);
+
+                if (tempList == null)
+                    tempList = new ArrayList<>();
+
+                WeekViewEvent temp = new WeekViewEvent(id, name, year, month, startday, starthour, startminute, year, month, endday, endhour, endminute);
+
+                //WeekViewEvent temp = new WeekViewEvent(id, name, wve.getStartTime().get(Calendar.YEAR), monthValue, wve.getStartTime().get(Calendar.DAY_OF_MONTH), wve.getStartTime().get(Calendar.HOUR_OF_DAY), wve.getStartTime().get(Calendar.MINUTE),
+                       // wve.getEndTime().get(Calendar.YEAR), monthValue, wve.getEndTime().get(Calendar.DAY_OF_MONTH), wve.getEndTime().get(Calendar.HOUR_OF_DAY), wve.getEndTime().get(Calendar.MINUTE));
 
                 temp.setColor(wve.getColor());
-                eventList.add(temp);
+                tempList.add(temp);
+
+                eventMap.put(month, tempList);
             }
 
-            resetCount();
+            //resetCount();
             //Toast.makeText(mainActivity.getBaseContext(), eventList.get(0).toString(), Toast.LENGTH_LONG);
-            mainActivity.refreshCalendar();
+            mainActivity.refreshCalendarEvents();
         }
     }
 

@@ -13,26 +13,20 @@ import java.util.ArrayList;
  * Created by Charley on 10/28/17.
  */
 
-public class DBMediumInsert implements LoaderManager.LoaderCallbacks<Integer> {
+public class DBMediumDelete implements LoaderManager.LoaderCallbacks<Integer> {
 
     MainActivityContainer mac;
-    private static final int DB_LOADER = 33;
+    private static final int DB_LOADER = 55;
 
-    private String name, date, day, time_start, time_end, busy, notes;
+    private long myid;
 
 
-    public DBMediumInsert() {
+    public DBMediumDelete() {
         mac = MainActivityContainer.getInstance();
     }
 
-    public void insert(String name, String date, String day, String time_start, String time_end, String busy, String notes) {
-        this.name = name;
-        this.date = date;
-        this.day = day;
-        this.time_start = time_start;
-        this.time_end = time_end;
-        this.busy = busy;
-        this.notes = notes;
+    public void delete(long myid) {
+        this.myid = myid;
 
         LoaderManager loaderManager = mac.getMainActivity().getSupportLoaderManager();
         Loader<String> loader = loaderManager.getLoader(DB_LOADER);
@@ -49,7 +43,7 @@ public class DBMediumInsert implements LoaderManager.LoaderCallbacks<Integer> {
             @Override
             public Integer loadInBackground() {
                 DatabaseAccess dba = new DatabaseAccess();
-                int i = dba.insertNewWeekViewEvent(name, date, day, time_start, time_end, busy, notes);
+                int i = dba.deleteWeekViewEvent(myid);
                 return i;
             }
         };

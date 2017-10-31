@@ -62,7 +62,7 @@ public class EditEnvelope {
         String[] split_time = time.split(":");
 
         temp.set(Calendar.YEAR, Integer.parseInt(split_year[0]));
-        temp.set(Calendar.MONTH, Integer.parseInt(split_year[1]));
+        temp.set(Calendar.MONTH, Integer.parseInt(split_year[1]) - 1);
         temp.set(Calendar.DAY_OF_MONTH, Integer.parseInt(split_year[2]));
         temp.set(Calendar.HOUR_OF_DAY, Integer.parseInt(split_time[0]));
         temp.set(Calendar.MINUTE, Integer.parseInt(split_time[1]));

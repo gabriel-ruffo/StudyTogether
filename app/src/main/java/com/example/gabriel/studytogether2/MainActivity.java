@@ -106,8 +106,20 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
     public void refreshCalendar() {
         if (mSectionsPagerAdapter != null) {
-            if (dbm.needsRefresh())
-                dbm.refreshList();
+            /*if (dbm.needsRefresh())
+                dbm.refreshList();*/
+            dbm.refreshList();
+
+            //mSectionsPagerAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void refreshCalendarEvents() {
+        if (mSectionsPagerAdapter != null) {
+            /*if (dbm.needsRefresh())
+                dbm.refreshList();*/
+            //dbm.refreshList();
+
             mSectionsPagerAdapter.notifyDataSetChanged();
         }
     }

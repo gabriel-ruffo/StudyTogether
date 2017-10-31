@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class DBMediumUpdate implements LoaderManager.LoaderCallbacks<Integer> {
 
     MainActivityContainer mac;
-    private static final int DB_LOADER = 33;
+    private static final int DB_LOADER = 44;
 
     private String name, date, day, time_start, time_end, busy, notes;
     private long myid;
