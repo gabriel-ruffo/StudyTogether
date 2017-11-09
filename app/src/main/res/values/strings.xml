@@ -7,4 +7,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_edit_event">taee</string>
     <string name="title_activity_chat">ChatActivity</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
 </resources>

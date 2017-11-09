@@ -1,5 +1,8 @@
 package com.example.gabriel.studytogether2;
 
+import com.alamkanak.weekview.WeekViewEvent;
+import com.example.gabriel.studytogether2.groupActivities.ConnectionShareHolder;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -7,59 +10,119 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseAccess {
-    static String url = "jdbc:mysql://studytogether.cxdwnsqecra4.us-west-2.rds.amazonaws.com/StudyTogether";
-    static String userName = "gruffo";
-    static String password = "aubriefeb18";
-    static String driver = "com.mysql.jdbc.Driver";
+    private static String url = "jdbc:mysql://studytogether.cxdwnsqecra4.us-west-2.rds.amazonaws.com/StudyTogether";
+    private static String userName = "gruffo";
+    private static String password = "aubriefeb18";
+    private static String driver = "com.mysql.jdbc.Driver";
 
     private Connection connection;
+    private ConnectionShareHolder csh = ConnectionShareHolder.getInstance();
 
     public DatabaseAccess() {
         try {
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url, userName, password);
+            if (csh.hasConnection()) {
+                connection = csh.getConnection();
+            } else {
+                Class.forName(driver);
+                connection = DriverManager.getConnection(url, userName, password);
+                if (connection != null)
+                    csh.setConnection(connection);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    public String getAllSingleEvents() {
+    public String getSingleEvent(long id) {
         String csvRS = "";
-        try {
+        try{
+            Class.forName(driver);
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from single_event");
+            String s = "select * from single_event where event_id=" + id;
+            ResultSet rs = stmt.executeQuery(s);
 
             while (rs.next()) {
-                csvRS = (rs.getString(1) + " " + rs.getString(2) + " "
-                        + rs.getString(3) + " " + rs.getString(4) + " "
-                        + rs.getString(5) + " " + rs.getString(6) + " "
-                        + rs.getString(7) + " " + rs.getString(8));
+                csvRS += (rs.getString(1) + "**" + rs.getString(2) + "**"
+                        + rs.getString(3) + "**" + rs.getString(4) + "**"
+                        + rs.getString(5) + "**" + rs.getString(6) + "**"
+                        + rs.getString(7) + "**" + rs.getString(8))+ "::";
             }
-        } catch (SQLException e) {
+
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
         return csvRS;
     }
 
-    // comment out later
-    public static void main(String[] args) {
+    public String getAllSingleEvents() {
+        String csvRS = "";
         try {
             Class.forName(driver);
-            Connection connection = DriverManager.getConnection(url, userName, password);
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("select * from single_event");
+
+            // splitting on '::'
             while (rs.next()) {
-                System.out.println(rs.getString(1) + " " + rs.getString(2) + " "
-                        + rs.getString(3) + " " + rs.getString(4) + " "
-                        + rs.getString(5) + " " + rs.getString(6) + " "
-                        + rs.getString(7) + " " + rs.getString(8));
+                csvRS += (rs.getString(1) + "**" + rs.getString(2) + "**"
+                        + rs.getString(3) + "**" + rs.getString(4) + "**"
+                        + rs.getString(5) + "**" + rs.getString(6) + "**"
+                        + rs.getString(7) + "**" + rs.getString(8))+ "::";
             }
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
+
+        return csvRS;
     }
 
+    public int updateWeekViewEvent(String name, String date, String day, String time_start, String time_end, String busy, String notes, long id) {
+        try {
+            Statement stmt = connection.createStatement();
+            String update_query = "UPDATE single_event ";
+            update_query += "SET name = \"" + name + "\", date = \"" + date + "\", day = \"" + day + "\", time_start = \"" + time_start + "\", time_end = \"" + time_end + "\", busy = \"" + busy + "\", notes = \"" + notes + "\" ";
+            update_query += "WHERE event_id=" + id;
+            int i = stmt.executeUpdate(update_query);
+            return i;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
+    public int deleteWeekViewEvent(long id) {
+        try {
+            Statement stmt = connection.createStatement();
+            String delete_query = "DELETE from single_event ";
+            delete_query += "WHERE event_id=" + id;
+            int i = stmt.executeUpdate(delete_query);
+            return i;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // TODO: Pass in actual 'day' argument, right now it's always 'M'
+    public int insertNewWeekViewEvent(String name, String date, String day, String time_start, String time_end, String busy, String notes) {
+        try {
+            Statement stmt = connection.createStatement();
+            long tempid = 100;
+            String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes, schedule_id)";
+            insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + tempid + "\")";
+            int i = stmt.executeUpdate(insert_query);
+            return i;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // comment out later
+    public static void main(String[] args) {
+        DatabaseAccess dba = new DatabaseAccess();
+        String s = dba.getAllSingleEvents();
+
+        System.out.println(s);
+    }
 }

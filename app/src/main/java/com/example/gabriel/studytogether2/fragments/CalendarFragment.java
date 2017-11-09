@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +20,10 @@ import com.alamkanak.weekview.DateTimeInterpreter;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
-import com.alamkanak.weekview.WeekViewLoader;
+import com.example.gabriel.studytogether2.DBMediumGet;
 import com.example.gabriel.studytogether2.EditEnvelope;
 import com.example.gabriel.studytogether2.EditEvent;
+import com.example.gabriel.studytogether2.MainActivity;
 import com.example.gabriel.studytogether2.R;
 
 import java.text.SimpleDateFormat;
@@ -36,11 +40,17 @@ import java.util.Locale;
  * Use the {@link CalendarFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalendarFragment extends Fragment {
+public class CalendarFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<WeekViewEvent>> {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private ArrayList<WeekViewEvent> listOfAllEvents = new ArrayList<>();
+
+    private static final int DB_LOADER = 22;
+
+    public MainActivity.SectionsPagerAdapter secAdaptor;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -50,7 +60,7 @@ public class CalendarFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    EditEnvelope ee = EditEnvelope.getInstance();
+    EditEnvelope ee = new EditEnvelope();
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -103,11 +113,15 @@ public class CalendarFragment extends Fragment {
         WeekView.EventClickListener mEventClickListener = new WeekView.EventClickListener() {
             @Override
             public void onEventClick(WeekViewEvent event, RectF eventRect) {
-                ee.setEvent(event);
+                DBMediumGet dbm = ((MainActivity) getActivity()).dbm;
+                dbm.resetEdit(event.getId());
+                dbm.refreshList();
+                /*ee.setEvent(event);
+
 
                 Intent newEvent = new Intent(getActivity(), EditEvent.class);
                 newEvent.putExtra("EDIT_EXISTING", true);
-                startActivity(newEvent);
+                startActivity(newEvent);*/
             }
         };
 
@@ -145,20 +159,38 @@ public class CalendarFragment extends Fragment {
 
         mWeekView.setDateTimeInterpreter(myInterpreter);
 
-
-
         MonthLoader.MonthChangeListener mMonthChangeListener = new MonthLoader.MonthChangeListener() {
             @Override
             public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
+                // TODO(2): RETURN LIST OF WEEKVIEWEVENTS QUERIED FROM DB
                 //List<WeekViewEvent> events = .getEvents(newYear, newMonth);
                 //List<WeekViewEvent> events = CalendarFragment.getMyEvents();
                 //List<WeekViewEvent> events2 = new ArrayList<>();
+                //ee.populateEvents();
 
-                if (ee.returnable()) {
-                    return ee.getEvents();
-                }
+                // TODO(3): this starts the second thread, charles
+//                if (listOfAllEvents != null)
+//                    return listOfAllEvents;
+               // Toast.makeText(getContext(), "before if", Toast.LENGTH_LONG);
 
-                return new ArrayList<WeekViewEvent>();
+                /*if (listOfAllEvents.size() > 0) {
+                   // Toast.makeText(getContext(), "in if", Toast.LENGTH_LONG);
+                    return listOfAllEvents;
+                }*/
+                DBMediumGet dbm = ((MainActivity) getActivity()).dbm;
+
+                /*if (dbm.needsRefresh()) {
+                    dbm.refreshList();
+                    mWeekView.notifyDatasetChanged();
+                }*/
+
+                //dbm.refreshList();
+                ArrayList<WeekViewEvent> tempList = dbm.getEvents(newMonth);
+
+                return tempList;
+                //setUpLoader();
+
+                //return new ArrayList<>();
             }
         };
 
@@ -169,16 +201,14 @@ public class CalendarFragment extends Fragment {
             }
         };
 
-
-
-// Set an action when any event is clicked.
+        // Set an action when any event is clicked.
         mWeekView.setOnEventClickListener(mEventClickListener);
 
-// The week view has infinite scrolling horizontally. We have to provide the events of a
-// month every time the month changes on the week view.
+        // The week view has infinite scrolling horizontally. We have to provide the events of a
+        // month every time the month changes on the week view.
         mWeekView.setMonthChangeListener(mMonthChangeListener);
 
-// Set long press listener for events.
+        // Set long press listener for events.
         mWeekView.setEventLongPressListener(mEventLongPressListener);
 
         FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab_calendar_add);
@@ -193,6 +223,7 @@ public class CalendarFragment extends Fragment {
 
         return v;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -218,6 +249,59 @@ public class CalendarFragment extends Fragment {
         mListener = null;
     }
 
+
+    private void setUpLoader() {
+        LoaderManager loaderManager = getActivity().getSupportLoaderManager();
+        Loader<String> loader = loaderManager.getLoader(DB_LOADER);
+
+        if (loader == null)
+            loaderManager.initLoader(DB_LOADER, null, this);
+        else
+            loaderManager.restartLoader(DB_LOADER, null, this);
+    }
+
+    @Override
+    public Loader<ArrayList<WeekViewEvent>> onCreateLoader(int id, final Bundle args) {
+        return new AsyncTaskLoader<ArrayList<WeekViewEvent>>(getActivity()) {
+            private ArrayList<WeekViewEvent> query;
+
+            @Override
+            public void onStartLoading() {
+                if (query != null) {
+                    deliverResult(query);
+                } else {
+                    forceLoad();
+                }
+            }
+
+            @Override
+            public ArrayList<WeekViewEvent> loadInBackground() {
+                query = new ArrayList<>();//ee.populateEvents();
+                return query;
+            }
+
+            @Override
+            public void deliverResult(ArrayList<WeekViewEvent> data) {
+                query = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<WeekViewEvent>> loader, ArrayList<WeekViewEvent> data) {
+        listOfAllEvents = data;
+        Toast.makeText(getContext(), listOfAllEvents.get(0).getName(), Toast.LENGTH_LONG).show();
+
+        ((MainActivity) getActivity()).refreshCalendar();
+        //secAdaptor.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<WeekViewEvent>> loader) {
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -231,10 +315,5 @@ public class CalendarFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 }

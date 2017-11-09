@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
@@ -34,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
     private Toast toastMsg;
 
+    public DBMediumGet dbm;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -53,6 +53,12 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MainActivityContainer mac = MainActivityContainer.getInstance();
+        mac.setMain(this);
+
+        dbm = new DBMediumGet();
+        dbm.refreshList();
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -98,14 +104,36 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
     }
 
+    public void refreshCalendar() {
+        if (mSectionsPagerAdapter != null) {
+            /*if (dbm.needsRefresh())
+                dbm.refreshList();*/
+            dbm.refreshList();
+
+            //mSectionsPagerAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void refreshCalendarEvents() {
+        if (mSectionsPagerAdapter != null) {
+            /*if (dbm.needsRefresh())
+                dbm.refreshList();*/
+            //dbm.refreshList();
+
+            mSectionsPagerAdapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (mSectionsPagerAdapter != null) {
-            EditEnvelope.getInstance().resetCount();
+        /*if (mSectionsPagerAdapter != null) {
+            //ditEnvelope.getInstance().resetCount();
+            dbm.resetRefresh();
+            dbm.resetCount();
             mSectionsPagerAdapter.notifyDataSetChanged();
-        }
+        }*/
     }
 
     @Override
@@ -199,7 +227,10 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
                 case 1:
                     return groupFragment;
                 case 2:
-                    return calendarFragment.newInstance("", "");
+                    CalendarFragment c = new CalendarFragment();
+                    c.secAdaptor = mSectionsPagerAdapter;
+                    return c;
+                    //return calendarFragment.newInstance("", "");
                 case 3:
                     return extrasFragment;
             }
