@@ -26,6 +26,7 @@ import com.example.gabriel.studytogether2.fragments.GroupFragment;
 import com.example.gabriel.studytogether2.fragments.dummy.DummyContent;
 import com.example.gabriel.studytogether2.groupActivities.ChatActivity;
 
+
 public class MainActivity extends AppCompatActivity implements CalendarFragment.OnFragmentInteractionListener, GroupFragment.OnListFragmentInteractionListener
 {
     //small change
