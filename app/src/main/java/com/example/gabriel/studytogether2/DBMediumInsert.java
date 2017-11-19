@@ -49,7 +49,7 @@ public class DBMediumInsert implements LoaderManager.LoaderCallbacks<Integer> {
             @Override
             public Integer loadInBackground() {
                 DatabaseAccess dba = new DatabaseAccess();
-                int i = dba.insertNewWeekViewEvent(name, date, day, time_start, time_end, busy, notes);
+                int i = dba.insertNewWeekViewEvent(name, date, day, time_start, time_end, busy, notes, mac.getSID());
                 return i;
             }
         };

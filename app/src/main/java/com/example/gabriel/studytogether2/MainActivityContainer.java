@@ -8,6 +8,7 @@ public class MainActivityContainer {
 
     private static MainActivityContainer mac;
     private MainActivity mainActivity;
+    private int sid;
 
     public static MainActivityContainer getInstance() {
         if (mac == null)
@@ -22,5 +23,13 @@ public class MainActivityContainer {
 
     public MainActivity getMainActivity() {
         return mainActivity;
+    }
+
+    public void setSID(int sid) {
+        this.sid = sid;
+    }
+
+    public int getSID() {
+        return sid;
     }
 }

@@ -55,7 +55,17 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         setContentView(R.layout.activity_main);
 
         MainActivityContainer mac = MainActivityContainer.getInstance();
+        try {
+            int sid = getIntent().getExtras().getInt("SID");
+            mac.setSID(sid);
+        }catch (Exception e) {
+
+        }
         mac.setMain(this);
+
+        Toast.makeText(this, "" + mac.getSID(), Toast.LENGTH_LONG).show();
+
+        //int tempint = getIntent().getExtras().getInt("SID");
 
         dbm = new DBMediumGet();
         dbm.refreshList();

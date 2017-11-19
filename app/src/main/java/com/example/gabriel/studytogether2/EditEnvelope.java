@@ -30,7 +30,8 @@ public class EditEnvelope {
         if (isSingle) {
             allEvents_raw = dba.getSingleEvent(id);
         } else {
-            allEvents_raw = dba.getAllSingleEvents();
+            //MainActivityContainer mac = MainActivityContainer.getInstance();
+            allEvents_raw = dba.getAllSingleEvents((int) id);
         }
         String[] allEvents = allEvents_raw.split("::");
         String[] temp;
@@ -38,19 +39,21 @@ public class EditEnvelope {
         Calendar startTime;
         Calendar endTime;
 
-        for (int i = 0; i < allEvents.length; i++) {
-            temp = allEvents[i].split("\\*\\*");
+        if (allEvents[0].length() > 0) {
+            for (int i = 0; i < allEvents.length; i++) {
+                temp = allEvents[i].split("\\*\\*");
 
-            // populate start and end time calendar objects
-            startTime = populateStartCalendar(temp[2], temp[4]);
-            endTime = populateStartCalendar(temp[2], temp[5]);
-            eventToAdd = new WeekViewEvent(Long.parseLong(temp[0]), temp[1], startTime, endTime);
-            // logic to create a new event
+                // populate start and end time calendar objects
+                startTime = populateStartCalendar(temp[2], temp[4]);
+                endTime = populateStartCalendar(temp[2], temp[5]);
+                eventToAdd = new WeekViewEvent(Long.parseLong(temp[0]), temp[1], startTime, endTime);
+                // logic to create a new event
 
-            if (temp[6].equals("Y"))
-                eventToAdd.setColor(Color.rgb(239, 147, 147));
+                if (temp[6].equals("Y"))
+                    eventToAdd.setColor(Color.rgb(239, 147, 147));
 
-            addEvent(eventToAdd);
+                addEvent(eventToAdd);
+            }
         }
 
         return eventList;

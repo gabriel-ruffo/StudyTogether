@@ -124,7 +124,7 @@ public class DBMediumGet implements LoaderManager.LoaderCallbacks<ArrayList<Week
                 if (editExisting) {
                     query = ee.populateEvents(true, queryid);
                 } else {
-                    query = ee.populateEvents(false, 0);
+                    query = ee.populateEvents(false, mac.getSID());
                 }
                 return query;
             }

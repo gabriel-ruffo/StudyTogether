@@ -15,7 +15,7 @@ android {
         key{
             keyAlias 'StudyKey'
             keyPassword 'Study1'
-            storeFile file('C:\\Users\\Daniel\\Downloads\\studyTogetherKeyStore.jks')
+            storeFile file('studyTogetherKeyStore.jks')
             storePassword 'Study1'
         }
     }

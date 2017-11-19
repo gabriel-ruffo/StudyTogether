@@ -55,12 +55,52 @@ public class DatabaseAccess {
         return csvRS;
     }
 
-    public String getAllSingleEvents() {
+    public String getScheduleId(String email) {
         String csvRS = "";
         try {
             Class.forName(driver);
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from single_event");
+            String s = "select user.schedule_id from user where user.email=\"" + email + "\"";
+            ResultSet rs = stmt.executeQuery(s);
+
+            while(rs.next()) {
+                csvRS += rs.getString(1);
+            }
+            // splitting on '::'
+            /*while (rs.next()) {
+                csvRS += (rs.getString(1) + "**" + rs.getString(2) + "**"
+                        + rs.getString(3) + "**" + rs.getString(4) + "**"
+                        + rs.getString(5) + "**" + rs.getString(6) + "**"
+                        + rs.getString(7) + "**" + rs.getString(8))+ "::";
+            }*/
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return csvRS;
+    }
+
+    public int insertNewUser(String email) {
+        try {
+            Statement stmt = connection.createStatement();
+            String insert_query = "INSERT INTO user(email)";
+            insert_query += " VALUES(\"" + email + "\")";
+            int i = stmt.executeUpdate(insert_query);
+            return i;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public String getAllSingleEvents(int sid) {
+        String csvRS = "";
+        try {
+            /*if (sid != 937)
+                sid = 10;*/
+            Class.forName(driver);
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from single_event where schedule_id=" + sid);
 
             // splitting on '::'
             while (rs.next()) {
@@ -69,7 +109,7 @@ public class DatabaseAccess {
                         + rs.getString(5) + "**" + rs.getString(6) + "**"
                         + rs.getString(7) + "**" + rs.getString(8))+ "::";
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (Exception/* | SQLException | ClassNotFoundException*/ e) {
             e.printStackTrace();
         }
 
@@ -100,16 +140,19 @@ public class DatabaseAccess {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
+
         return 0;
     }
 
     // TODO: Pass in actual 'day' argument, right now it's always 'M'
-    public int insertNewWeekViewEvent(String name, String date, String day, String time_start, String time_end, String busy, String notes) {
+    public int insertNewWeekViewEvent(String name, String date, String day, String time_start, String time_end, String busy, String notes, int sid) {
         try {
             Statement stmt = connection.createStatement();
-            long tempid = 100;
+            //long tempid = 100;
             String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes, schedule_id)";
-            insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + tempid + "\")";
+            insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + sid + "\")";
             int i = stmt.executeUpdate(insert_query);
             return i;
         } catch (SQLException e) {
@@ -121,8 +164,8 @@ public class DatabaseAccess {
     // comment out later
     public static void main(String[] args) {
         DatabaseAccess dba = new DatabaseAccess();
-        String s = dba.getAllSingleEvents();
+        //String s = dba.getAllSingleEvents();
 
-        System.out.println(s);
+        //System.out.println(s);
     }
 }

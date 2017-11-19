@@ -74,17 +74,30 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         }
     }
 
+    private String email;
+
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
+
             GoogleSignInAccount acct = result.getSignInAccount();
-            if(mToast != null){
+
+            email = "" + acct.getEmail();
+
+            DBMediumGetUser dbmgu = new DBMediumGetUser(this);
+
+            dbmgu.getScheduleId(email);
+
+
+
+
+            /*if(mToast != null){
                 mToast.cancel();
             }
 
             mToast.makeText(this, "Gud s.i.: " + acct.getEmail(), Toast.LENGTH_LONG).show();
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);*/
             /*
             mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
@@ -96,8 +109,25 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 mToast.cancel();
             }
 
-            mToast.makeText(this, "Bad sign in", Toast.LENGTH_LONG).show();
+            mToast.makeText(this, "Bad sign in : " + result.getStatus().getStatusCode(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void loadFinished(String schedule_id) {
+        if (schedule_id.length() > 0) {
+            Intent signInIntent = new Intent(this, MainActivity.class);
+            signInIntent.putExtra("SID", Integer.parseInt(schedule_id));
+            startActivity(signInIntent);
+        } else {
+            DBMediumInsertUser dbmiu = new DBMediumInsertUser(this);
+            dbmiu.insertNewEmail(email);
+        }
+    }
+
+    public void doneInsertingUser() {
+        DBMediumGetUser dbmgu = new DBMediumGetUser(this);
+
+        dbmgu.getScheduleId(email);
     }
 
     @Override
