@@ -1,4 +1,4 @@
-package com.example.gabriel.studytogether2;
+package com.example.gabriel.studytogether2.schedule_package;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -19,8 +19,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekViewEvent;
+import com.example.gabriel.studytogether2.dbMedium_package.DBMediumDelete;
+import com.example.gabriel.studytogether2.dbMedium_package.DBMediumInsert;
+import com.example.gabriel.studytogether2.dbMedium_package.DBMediumUpdate;
+import com.example.gabriel.studytogether2.DatabaseAccess;
+import com.example.gabriel.studytogether2.R;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -73,7 +77,7 @@ public class EditEvent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_event);
 
-        getSupportActionBar().setTitle("Edit Text");
+        getSupportActionBar().setTitle("Edit Event");
 
         editExisting = getIntent().getExtras().getBoolean("EDIT_EXISTING");
 

@@ -4,11 +4,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.WindowDecorActionBar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.gabriel.studytogether2.dbMedium_package.DBMediumGetUser;
+import com.example.gabriel.studytogether2.dbMedium_package.DBMediumInsertUser;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -117,6 +118,7 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         if (schedule_id.length() > 0) {
             Intent signInIntent = new Intent(this, MainActivity.class);
             signInIntent.putExtra("SID", Integer.parseInt(schedule_id));
+            signInIntent.putExtra("EMAIL", email);
             startActivity(signInIntent);
         } else {
             DBMediumInsertUser dbmiu = new DBMediumInsertUser(this);

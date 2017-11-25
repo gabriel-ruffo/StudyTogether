@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/ac_ed"
-    tools:context="com.example.gabriel.studytogether2.EditEvent">
+    tools:context="com.example.gabriel.studytogether2.schedule_package.EditEvent">
 
 
     <GridLayout

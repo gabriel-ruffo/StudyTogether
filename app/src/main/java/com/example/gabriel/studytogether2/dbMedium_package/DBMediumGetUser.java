@@ -1,16 +1,12 @@
-package com.example.gabriel.studytogether2;
+package com.example.gabriel.studytogether2.dbMedium_package;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 
-import com.alamkanak.weekview.WeekViewEvent;
-
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
-import java.util.ArrayList;
+import com.example.gabriel.studytogether2.DatabaseAccess;
+import com.example.gabriel.studytogether2.SignInActivity;
 
 /**
  * Created by Charley on 11/9/17.

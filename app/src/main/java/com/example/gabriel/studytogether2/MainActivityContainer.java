@@ -9,6 +9,7 @@ public class MainActivityContainer {
     private static MainActivityContainer mac;
     private MainActivity mainActivity;
     private int sid;
+    private String username;
 
     public static MainActivityContainer getInstance() {
         if (mac == null)
@@ -19,6 +20,11 @@ public class MainActivityContainer {
 
     public void setMain(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
+        //this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public MainActivity getMainActivity() {
@@ -27,6 +33,10 @@ public class MainActivityContainer {
 
     public void setSID(int sid) {
         this.sid = sid;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getSID() {

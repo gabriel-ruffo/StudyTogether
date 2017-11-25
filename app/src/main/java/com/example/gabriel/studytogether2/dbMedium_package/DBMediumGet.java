@@ -1,13 +1,16 @@
-package com.example.gabriel.studytogether2;
+package com.example.gabriel.studytogether2.dbMedium_package;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.widget.Toast;
 
 import com.alamkanak.weekview.WeekViewEvent;
+import com.example.gabriel.studytogether2.schedule_package.EditEnvelope;
+import com.example.gabriel.studytogether2.schedule_package.EditEvent;
+import com.example.gabriel.studytogether2.MainActivity;
+import com.example.gabriel.studytogether2.MainActivityContainer;
 
 import java.util.ArrayList;
 import java.util.Calendar;

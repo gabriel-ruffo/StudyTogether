@@ -20,9 +20,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.gabriel.studytogether2.fragments.CalendarFragment;
-import com.example.gabriel.studytogether2.fragments.ExtrasFragment;
-import com.example.gabriel.studytogether2.fragments.GroupFragment;
+import com.example.gabriel.studytogether2.dbMedium_package.DBMediumGet;
+import com.example.gabriel.studytogether2.dbMedium_package.DBMediumGetGroups;
+import com.example.gabriel.studytogether2.schedule_package.CalendarFragment;
+import com.example.gabriel.studytogether2.groups_package.GroupFragment;
 import com.example.gabriel.studytogether2.fragments.dummy.DummyContent;
 import com.example.gabriel.studytogether2.groupActivities.ChatActivity;
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
     private Toast toastMsg;
 
     public DBMediumGet dbm;
+    public DBMediumGetGroups dbmgg;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -57,7 +59,9 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         MainActivityContainer mac = MainActivityContainer.getInstance();
         try {
             int sid = getIntent().getExtras().getInt("SID");
+            String tUsername = getIntent().getExtras().getString("EMAIL");
             mac.setSID(sid);
+            mac.setUsername(tUsername);
         }catch (Exception e) {
 
         }
@@ -69,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
         dbm = new DBMediumGet();
         dbm.refreshList();
+
+        dbmgg = new DBMediumGetGroups();
+        dbmgg.refreshList();
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -112,6 +119,10 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public void refreshGroups() {
+        dbmgg.refreshList();
     }
 
     public void refreshCalendar() {
@@ -162,6 +173,13 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         startActivity(startChildActivityIntent);
     }
 
+    public void finishGroups() {
+        if (mSectionsPagerAdapter != null) {
+            mSectionsPagerAdapter.notifyDataSetChanged();
+        }
+    }
+
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -204,13 +222,11 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private CalendarFragment calendarFragment;
-        private ExtrasFragment extrasFragment;
         private GroupFragment groupFragment;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
             calendarFragment = new CalendarFragment();
-            extrasFragment = new ExtrasFragment();
             groupFragment = new GroupFragment();
         }
 
@@ -233,16 +249,19 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
             switch (position) {
                 case 0:
-                    return PlaceholderFragment.newInstance(position);
-                case 1:
                     return groupFragment;
-                case 2:
+                    //return PlaceholderFragment.newInstance(position);
+                case 1:
+                    CalendarFragment c = new CalendarFragment();
+                    c.secAdaptor = mSectionsPagerAdapter;
+                    return c;
+                /*case 2:
                     CalendarFragment c = new CalendarFragment();
                     c.secAdaptor = mSectionsPagerAdapter;
                     return c;
                     //return calendarFragment.newInstance("", "");
                 case 3:
-                    return extrasFragment;
+                    return extrasFragment;*/
             }
             return null;
         }
@@ -250,20 +269,20 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "MESSAGES";
-                case 1:
                     return "GROUPS";
-                case 2:
+                case 1:
+                    return "SCHEDULE";
+                /*case 2:
                     return "SCHEDULE";
                 case 3:
-                    return "SETTINGS";
+                    return "SETTINGS";*/
             }
             return null;
         }

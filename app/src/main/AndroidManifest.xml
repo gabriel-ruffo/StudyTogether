@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gabriel.studytogether2">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,19 +14,23 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".extrasActivities.HelpActivity" />
-        <activity android:name=".extrasActivities.ProfileActivity" />
-        <activity android:name=".extrasActivities.SettingsActivity" />
-        <activity android:name=".EditEvent"
-            android:parentActivityName=".MainActivity" >
-
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".schedule_package.EditEvent"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.gabriel.studytogether2.MainActivity" />
         </activity>
+
+        <activity
+            android:name=".groups_package.CreateGroup"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.gabriel.studytogether2.MainActivity" />
+        </activity>
+
         <activity
             android:name=".groupActivities.ChatActivity"
             android:parentActivityName=".MainActivity">
@@ -35,7 +40,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.gabriel.studytogether2.MainActivity" />
         </activity>
-
         <activity android:name=".groupActivities.GroupInfoActivity" />
         <activity android:name=".SignInActivity">
             <intent-filter>
@@ -44,6 +48,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".groups_package.GroupScreen" />
+        <activity android:name=".groups_package.GroupsCommonTime" />
+        <activity android:name=".groups_package.CommonDetails"></activity>
     </application>
 
 </manifest>

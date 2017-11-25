@@ -1,8 +1,9 @@
-package com.example.gabriel.studytogether2;
+package com.example.gabriel.studytogether2.schedule_package;
 
 import android.graphics.Color;
 
 import com.alamkanak.weekview.WeekViewEvent;
+import com.example.gabriel.studytogether2.DatabaseAccess;
 
 import java.util.ArrayList;
 import java.util.Calendar;

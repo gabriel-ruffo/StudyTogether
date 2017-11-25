@@ -1,4 +1,4 @@
-package com.example.gabriel.studytogether2.fragments;
+package com.example.gabriel.studytogether2.schedule_package;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,9 +20,7 @@ import com.alamkanak.weekview.DateTimeInterpreter;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
-import com.example.gabriel.studytogether2.DBMediumGet;
-import com.example.gabriel.studytogether2.EditEnvelope;
-import com.example.gabriel.studytogether2.EditEvent;
+import com.example.gabriel.studytogether2.dbMedium_package.DBMediumGet;
 import com.example.gabriel.studytogether2.MainActivity;
 import com.example.gabriel.studytogether2.R;
 

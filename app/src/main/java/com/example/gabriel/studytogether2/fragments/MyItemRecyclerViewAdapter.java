@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.gabriel.studytogether2.R;
-import com.example.gabriel.studytogether2.fragments.GroupFragment.OnListFragmentInteractionListener;
+import com.example.gabriel.studytogether2.groups_package.GroupFragment.OnListFragmentInteractionListener;
 import com.example.gabriel.studytogether2.fragments.dummy.DummyContent.DummyItem;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+                .inflate(R.layout.fragment_group_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -59,15 +59,15 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView mIdView = null;
+        public final TextView mContentView = null;
         public DummyItem mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            /*mIdView = (TextView) view.findViewById(R.id.id);
+            mContentView = (TextView) view.findViewById(R.id.content);*/
         }
 
         @Override
