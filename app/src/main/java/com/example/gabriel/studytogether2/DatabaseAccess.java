@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.xml.transform.Result;
+
 public class DatabaseAccess {
     private static String url = "jdbc:mysql://studytogether.cxdwnsqecra4.us-west-2.rds.amazonaws.com/StudyTogether";
     private static String userName = "gruffo";
@@ -118,7 +120,6 @@ public class DatabaseAccess {
     }
 
     public int deleteGroup(int groupid) {
-
         /*try {
             Statement stmt = connection.createStatement();
             String delete_query = "DELETE from single_event ";
@@ -129,15 +130,7 @@ public class DatabaseAccess {
             e.printStackTrace();
         }
 
-
-
         return 0;*/
-
-
-
-
-
-
         String delGStmt = "DELETE from StudyTogether.group where group_id=" + groupid;
 
         try {
@@ -371,19 +364,228 @@ public class DatabaseAccess {
         return 0;
     }
 
+    // on insert:
+    //      check to see if there exist events on the day and time of the candidate event
+    //          if candidate.busy && exists.busy
+    //              don't insert candidate & reply with toast
+    //          if candidate.busy && exists.free
+    //              insert candidate as usual, but update exists.time_start ot exists.time_end accordingly
+    //          if candidate.free && exists.free
+    //              don't insert candidate, but update exists with new time_start or time_end accordingly
+    //          if candidate.free && exists.busy
+    //              don't insert candidate & reply with toast
+    // commit stuff
     // TODO: Pass in actual 'day' argument, right now it's always 'M'
     public int insertNewWeekViewEvent(String name, String date, String day, String time_start, String time_end, String busy, String notes, int sid) {
+        int upper_event_id = upperOverlappingEvent(date, time_start, time_end);
+        int lower_event_id = lowerOverlappingEvent(date, time_start, time_end);
+
+        if (upper_event_id != -1) {
+            String other_busy = checkIfBusy(upper_event_id);
+
+            // Case 1: busy && busy
+            if (busy.equals("Y") && other_busy.equals("Y")) {
+                // TODO: Charlesy -- Respond with Toast("There's already a busy event here!");
+                return 0;
+            } else if(busy.equals("Y") && other_busy.equals("N")) {
+                // Case 2: busy && free
+                int ret_val = updateEventUpperEnd(upper_event_id, time_end);
+                try {
+                    Statement stmt = connection.createStatement();
+                    String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes, schedule_id)";
+                    insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + sid + "\")";
+                    return stmt.executeUpdate(insert_query);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                return ret_val;
+            } else if (busy.equals("N") && other_busy.equals("N")) {
+                // Case 3: free && free
+                String other_time_end = getOtherTimeEnd(upper_event_id);
+                try {
+                    Statement stmt = connection.createStatement();
+                    String delete_query = "DELETE FROM single_event WHERE event_id = " + upper_event_id;
+                    stmt.executeUpdate(delete_query);
+                    String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes, schedule_id)";
+                    insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + other_time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + sid + "\")";
+                    return stmt.executeUpdate(insert_query);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                return 0;
+            } else if (busy.equals("N") && other_busy.equals("Y")) {
+                // Case 4: free && busy
+                // TODO: Charlesy -- Respond with Toast("There's already a busy event here!");
+                return 0;
+            }
+
+        } else if (lower_event_id != -1) {
+            String other_busy = checkIfBusy(lower_event_id);
+
+            if (busy.equals("Y") && other_busy.equals("Y")) {
+                // Case 1: busy && busy
+                // TODO: Toast("There's already a busy event here!");
+                return 0;
+            } else if (busy.equals("Y") && other_busy.equals("N")) {
+                // Case 2: busy && free
+                int ret_val = updateEventLowerEnd(lower_event_id, time_start);
+                try {
+                    Statement stmt = connection.createStatement();
+                    String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes, schedule_id)";
+                    insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + sid + "\")";
+                    return stmt.executeUpdate(insert_query);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                return ret_val;
+            } else if (busy.equals("N") && other_busy.equals("N")) {
+                // Case 3: free && free
+                String other_time_start = getOtherTimeStart(lower_event_id);
+                try {
+                    Statement stmt = connection.createStatement();
+                    String delete_query = "DELETE FROM single_event WHERE event_id = " + lower_event_id;
+                    stmt.executeUpdate(delete_query);
+                    String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes, schedule_id)";
+                    insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + other_time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + sid + "\")";
+                    return stmt.executeUpdate(insert_query);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                return 0;
+            } else if (busy.equals("N") && other_busy.equals("Y")) {
+                // Case 4: free && busy
+                // TODO: Toast("There's already a busy event here!");
+                return 0;
+            }
+        } else {
+            try {
+                Statement stmt = connection.createStatement();
+                //long tempid = 100;
+                String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes, schedule_id)";
+                insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + sid + "\")";
+                int i = stmt.executeUpdate(insert_query);
+                return i;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return 0;
+    }
+
+    private String checkIfBusy(int event_id) {
+        String busy = "N";
+        String query = "SELECT busy FROM single_event WHERE event_id = " + event_id;
+
         try {
-            Statement stmt = connection.createStatement();
-            //long tempid = 100;
-            String insert_query = "INSERT INTO single_event(name, date, day, time_start, time_end, busy, notes, schedule_id)";
-            insert_query += " VALUES(\"" + name + "\", \"" + date + "\", \"" + day + "\", \"" + time_start + "\", \"" + time_end + "\", \"" + busy + "\", \"" + notes + "\", \"" + sid + "\")";
-            int i = stmt.executeUpdate(insert_query);
-            return i;
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                busy = resultSet.getString(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return busy;
+    }
+
+    private int upperOverlappingEvent(String date, String time_start, String time_end) {
+        int sid = MainActivityContainer.getInstance().getSID();
+        String query = "SELECT event_id FROM single_event WHERE (schedule_id = " + sid +
+                " AND date=\"" + date +"\") AND (time_start > \'" + time_start + "\') AND" +
+                " (time_start < \'" + time_end + "\' AND time_end > \'" + time_end + "\')";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    private int lowerOverlappingEvent(String date, String time_start, String time_end) {
+        int sid = MainActivityContainer.getInstance().getSID();
+        String query = "SELECT event_id FROM single_event WHERE (schedule_id = " + sid +
+                " AND date=\"" + date +"\") AND (time_end < \'" + time_end + "\') AND" +
+                " (time_start < \'" + time_start + "\' AND time_end > \'" + time_start + "\')";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    private int updateEventUpperEnd(int event_id, String old_time_end) {
+        try {
+            Statement statement = connection.createStatement();
+            String query = "UPDATE single_event " +
+                            " SET time_start = \"" + old_time_end + "\" " +
+                            " WHERE event_id = " + event_id;
+            return statement.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return 0;
+    }
+
+    private int updateEventLowerEnd(int event_id, String old_time_start) {
+        try {
+            Statement statement = connection.createStatement();
+            String query = "UPDATE single_event " +
+                            " SET time_end = \"" + old_time_start + "\" " +
+                            " WHERE event_id = " + event_id;
+            return statement.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    private String getOtherTimeEnd(int event_id) {
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT time_end FROM single_event WHERE event_id=" + event_id;
+            ResultSet resultSet = statement.executeQuery(query);
+            while(resultSet.next()) {
+                return resultSet.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private String getOtherTimeStart(int event_id) {
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT time_start FROM single_event WHERE event_id=" + event_id;
+            ResultSet resultSet = statement.executeQuery(query);
+            while(resultSet.next()) {
+                return resultSet.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     // comment out later
