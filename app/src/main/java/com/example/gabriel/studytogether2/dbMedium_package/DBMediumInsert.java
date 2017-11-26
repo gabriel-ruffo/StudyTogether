@@ -1,5 +1,6 @@
 package com.example.gabriel.studytogether2.dbMedium_package;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -42,6 +43,7 @@ public class DBMediumInsert implements LoaderManager.LoaderCallbacks<Integer> {
             loaderManager.restartLoader(DB_LOADER, null, this).forceLoad();
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<Integer> onCreateLoader(int id, Bundle args) {
         return new AsyncTaskLoader<Integer>(mac.getMainActivity()) {
