@@ -42,12 +42,12 @@ public class GroupsCommonRVAdapter extends RecyclerView.Adapter<GroupsCommonRVAd
 
         holder.title.setText(timeCards.get(position).getName());
         holder.desc.setText(timeCards.get(position).getDescription());
-        holder.image.setImageResource(R.drawable.ic_add);
+        holder.image.setText(timeCards.get(position).getSize());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return timeCards.size();
     }
 
 
@@ -56,7 +56,7 @@ public class GroupsCommonRVAdapter extends RecyclerView.Adapter<GroupsCommonRVAd
         CardView cv;
         TextView title;
         TextView desc;
-        ImageView image;
+        TextView image;
 
         TimeCardViewHolder(View itemView) {
             super(itemView);
@@ -64,7 +64,7 @@ public class GroupsCommonRVAdapter extends RecyclerView.Adapter<GroupsCommonRVAd
             cv = (CardView) itemView.findViewById(R.id.cv_common_time);
             title = (TextView) itemView.findViewById(R.id.tv_common_title);
             desc = (TextView) itemView.findViewById(R.id.tv_common_description);
-            image = (ImageView) itemView.findViewById(R.id.iv_common_image);
+            image = (TextView) itemView.findViewById(R.id.iv_common_image);
         }
 
         @Override

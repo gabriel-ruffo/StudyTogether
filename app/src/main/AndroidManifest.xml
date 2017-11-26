@@ -22,7 +22,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.gabriel.studytogether2.MainActivity" />
         </activity>
-
         <activity
             android:name=".groups_package.CreateGroup"
             android:parentActivityName=".MainActivity">
@@ -30,7 +29,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.gabriel.studytogether2.MainActivity" />
         </activity>
-
         <activity
             android:name=".groupActivities.ChatActivity"
             android:parentActivityName=".MainActivity">
@@ -50,7 +48,8 @@
         </activity>
         <activity android:name=".groups_package.GroupScreen" />
         <activity android:name=".groups_package.GroupsCommonTime" />
-        <activity android:name=".groups_package.CommonDetails"></activity>
+        <activity android:name=".groups_package.CommonDetails" />
+        <activity android:name=".groups_package.GroupsCommonDetail"></activity>
     </application>
 
 </manifest>

@@ -137,7 +137,7 @@ public class CalculateCommonTime {
         for (int i = 0; i < events.size(); i++) {
             WeekViewEvent wve = events.get(i);
             HalfEvent heS = new HalfEvent((int) wve.getId(), wve.getName(), true, wve.getStartTime());
-            HalfEvent heE = new HalfEvent((int) wve.getId(), wve.getName(), true, wve.getEndTime());
+            HalfEvent heE = new HalfEvent((int) wve.getId(), wve.getName(), false, wve.getEndTime());
 
             hevents.add(heS);
             hevents.add(heE);
@@ -166,6 +166,8 @@ public class CalculateCommonTime {
 
         public Event(int userId, String username, Calendar start, Calendar end) {
             this.userId = userId;
+            users = new ArrayList<>();
+            usersNames = new ArrayList<>();
             //users.add(userId);
             this.username = username;
             this.start = start;

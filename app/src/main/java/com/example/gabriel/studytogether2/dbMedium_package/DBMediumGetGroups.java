@@ -135,7 +135,8 @@ public class DBMediumGetGroups implements LoaderManager.LoaderCallbacks<ArrayLis
             String desc = "";
 
             for (int i = 0; i < groupmembers.size(); i++) {
-                desc += groupmembers.get(i) + ", ";
+                String tmpU = groupmembers.get(i).split("@")[0];
+                desc += /*groupmembers.get(i)*/ tmpU + ", ";
             }
 
             return desc;

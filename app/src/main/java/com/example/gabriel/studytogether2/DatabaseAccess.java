@@ -188,17 +188,17 @@ public class DatabaseAccess {
             try {
                 Class.forName(driver);
                 Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery("select * from single_event where schedule_id=" + sids.get(i));
+                ResultSet rs = stmt.executeQuery("select * from single_event where schedule_id=" + sids.get(i) + " and busy=\"N\"");
 
                 // splitting on '::'
-                int index = 0;
+                //int index = 0;
                 while (rs.next()) {
-                    csvRS += (rs.getString(1) + "**" + /*rs.getString(2)*/ uNames.get(index) + "**"
+                    csvRS += (rs.getString(1) + "**" + /*rs.getString(2)*/ uNames.get(i) + "**"
                             + rs.getString(3) + "**" + rs.getString(4) + "**"
                             + rs.getString(5) + "**" + rs.getString(6) + "**"
                             + rs.getString(7) + "**" + rs.getString(8)) + "::";
 
-                    index++;
+                    //index++;
                 }
             } catch (Exception/* | SQLException | ClassNotFoundException*/ e) {
                 e.printStackTrace();

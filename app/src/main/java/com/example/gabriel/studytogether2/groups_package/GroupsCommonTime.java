@@ -14,6 +14,7 @@ import com.example.gabriel.studytogether2.CalculateCommonTime;
 import com.example.gabriel.studytogether2.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class GroupsCommonTime extends AppCompatActivity
 implements GroupsRVAdapter.ListItemClickListener{
@@ -24,6 +25,8 @@ implements GroupsRVAdapter.ListItemClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_common_time);
+
+        getSupportActionBar().setTitle("Common Events");
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv_common_times);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -64,7 +67,12 @@ implements GroupsRVAdapter.ListItemClickListener{
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Intent newIntent = new Intent(this, GroupScreen.class);
+        Intent newIntent = new Intent(this, GroupsCommonDetail.class);
+
+        GroupsCTContainer gctc = GroupsCTContainer.getInstance();
+        gctc.setTimeCard(timeCards.get(clickedItemIndex));
+
+        startActivity(newIntent);
 
         /*int gid = dbmgg.getGid(clickedItemIndex);
 
@@ -93,19 +101,91 @@ implements GroupsRVAdapter.ListItemClickListener{
             usNames = ev.usersNames;
         }
 
+        public String getSize() {
+            return sids.size() + "";
+        }
+
         public String getName() {
-            return "Time";
+            String ttl = "";
+
+            ttl += ev.start.get(Calendar.MONTH) + 1 + "/";
+            ttl += ev.start.get(Calendar.DAY_OF_MONTH) + "/";
+            ttl += ev.start.get(Calendar.YEAR) % 1000 + " ";
+
+            int h = ev.start.get(Calendar.HOUR_OF_DAY);
+            boolean isNoon = false;
+            if (h > 11)
+                isNoon = true;
+            if (h > 12)
+                h -= 12;
+            if (h < 10)
+                ttl += "0";
+            ttl += h + ":";
+
+            int m = ev.start.get(Calendar.MINUTE);
+
+            if (m < 10)
+                ttl += "0";
+
+            //ttl += ev.start.get(Calendar.HOUR_OF_DAY) + ":";
+            ttl += m + " ";
+            if (isNoon)
+                ttl += "pm";
+            else
+                ttl += "am";
+
+            ttl += " - ";
+
+
+            ttl += ev.end.get(Calendar.MONTH) + 1 + "/";
+            ttl += ev.end.get(Calendar.DAY_OF_MONTH) + "/";
+            ttl += ev.end.get(Calendar.YEAR) % 1000 + " ";
+
+            h = ev.end.get(Calendar.HOUR_OF_DAY);
+            isNoon = false;
+            if (h > 11)
+                isNoon = true;
+            if (h > 12)
+                h -= 12;
+            if (h < 10)
+                ttl += "0";
+            ttl += h + ":";
+
+            //ttl += ev.start.get(Calendar.HOUR_OF_DAY) + ":";
+            m = ev.end.get(Calendar.MINUTE);
+
+            if (m < 10)
+                ttl += "0";
+
+            ttl += m + " ";
+            if (isNoon)
+                ttl += "pm";
+            else
+                ttl += "am";
+            //ttl += ev.end.get(Calendar.HOUR_OF_DAY) + ":";
+            //ttl += ev.end.get(Calendar.MINUTE) + "";
+
+
+            return ttl;
+            //return "Time";
         }
 
         public String getDescription() {
             String desc = "";
 
             for (int i = 0; i < usNames.size(); i++) {
-                desc += usNames.get(i) + ", ";
+                String tmpU = usNames.get(i).split("@")[0];
+                desc += /*usNames.get(i)*/ tmpU + ", ";
             }
 
             return desc;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //finish();
     }
 
     private void initializeData() {
