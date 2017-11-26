@@ -374,7 +374,7 @@ public class DatabaseAccess {
     //              don't insert candidate, but update exists with new time_start or time_end accordingly
     //          if candidate.free && exists.busy
     //              don't insert candidate & reply with toast
-    //
+    // commit stuff
     // TODO: Pass in actual 'day' argument, right now it's always 'M'
     public int insertNewWeekViewEvent(String name, String date, String day, String time_start, String time_end, String busy, String notes, int sid) {
         int upper_event_id = upperOverlappingEvent(date, time_start, time_end);
