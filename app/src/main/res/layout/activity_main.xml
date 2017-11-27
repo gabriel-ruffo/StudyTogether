@@ -8,6 +8,13 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.gabriel.studytogether2.MainActivity">
 
+    <ProgressBar
+        android:id="@+id/pb_group_fragment"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"

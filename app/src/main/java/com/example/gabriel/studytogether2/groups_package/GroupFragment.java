@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.gabriel.studytogether2.MainActivity;
@@ -38,6 +39,7 @@ implements GroupsRVAdapter.ListItemClickListener{
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -62,6 +64,8 @@ implements GroupsRVAdapter.ListItemClickListener{
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+
 
 
     }
@@ -113,6 +117,7 @@ implements GroupsRVAdapter.ListItemClickListener{
         rv.setAdapter(adapter);*/
         initializeData();
 
+        ((MainActivity) getActivity()).spinner.setVisibility(View.GONE);
         // Set the adapter
         if (rv instanceof RecyclerView) {
             Context context = view.getContext();

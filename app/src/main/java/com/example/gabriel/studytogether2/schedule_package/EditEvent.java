@@ -15,6 +15,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.example.gabriel.studytogether2.DatabaseAccess;
 import com.example.gabriel.studytogether2.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -57,6 +59,12 @@ public class EditEvent extends AppCompatActivity {
     EditText et_date;// = (EditText) findViewById(R.id.et_date);
 
     EditText et_notes;// = (EditText) findViewById(R.id.et_notes);
+
+    RadioGroup rg_busy;
+    RadioButton rb_busy;
+    RadioButton rb_free;
+
+    //EditText et_notes;
 
 
 
@@ -105,6 +113,11 @@ public class EditEvent extends AppCompatActivity {
         et_date = (EditText) findViewById(R.id.et_date);
 
         et_notes = (EditText) findViewById(R.id.et_notes);
+
+        rg_busy = (RadioGroup) findViewById(R.id.rg_busy);
+        rb_busy = (RadioButton) findViewById(R.id.radio_busy);
+        rb_free = (RadioButton) findViewById(R.id.radio_free);
+
 
         //startSpinner = (Spinner) findViewById(R.id.spinner_start_ampm);
         //endSpinner = (Spinner) findViewById(R.id.spinner_end_ampm);
@@ -196,6 +209,19 @@ public class EditEvent extends AppCompatActivity {
         calendar.set(Calendar.MONTH, tempMonth);
         calendar.set(Calendar.DAY_OF_MONTH, tempDay);
 
+        boolean tempBusy = bundle.getBoolean("BUSY");
+
+        if (!tempBusy) {
+            //rg_busy.getCheckedRadioButtonId();
+            //rb_free.toggle();
+            rb_free.setChecked(true);
+            rb_busy.setChecked(false);
+            busy = false;
+        }
+
+        et_notes.setText(bundle.getString("NOTES"));
+
+
         updateLabel();
 
         //et_date.setText(tempMonth + "/" + tempDay + "/" + tempYear);
@@ -212,8 +238,10 @@ public class EditEvent extends AppCompatActivity {
 
         if (visible) {
             tempGrid.setVisibility(View.GONE);
+            et_date.setVisibility(View.VISIBLE);
         } else {
             tempGrid.setVisibility(View.VISIBLE);
+            et_date.setVisibility(View.GONE);
         }
 
         visible = !visible;
@@ -256,32 +284,163 @@ public class EditEvent extends AppCompatActivity {
 
         if (validateVariables()) {
 
-            wve = new WeekViewEvent(100, name, year, month, day, startTimeHours, startTimeMinute, year, month, day, endTimeHour, endTimeMinute);
+            if (!repeat.isChecked() || editExisting) {
 
-            if (busy) {
-                wve.setColor(Color.rgb(239, 147, 147));
-            }
+                wve = new WeekViewEvent(100, name, year, month, day, startTimeHours, startTimeMinute, year, month, day, endTimeHour, endTimeMinute);
 
-            EditEnvelope ee = new EditEnvelope();
+                if (busy) {
+                    wve.setColor(Color.rgb(239, 147, 147));
+                }
 
-            String tempBusy = "N";
-            if (busy)
-                tempBusy = "Y";
+                EditEnvelope ee = new EditEnvelope();
+
+                String tempBusy = "N";
+                if (busy)
+                    tempBusy = "Y";
 
 
-            if (editExisting) {
-               // ee.updateEvent(wve);
-                DBMediumUpdate dbmu = new DBMediumUpdate();
-                dbmu.update(name, "" + year + "-" + month + "-" + day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes, getIntent().getExtras().getLong("ID"));
-            } else {
-              //  ee.addEvent(wve);
+                if (editExisting) {
+                    // ee.updateEvent(wve);
+                    DBMediumUpdate dbmu = new DBMediumUpdate();
+                    dbmu.update(name, "" + year + "-" + month + "-" + day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes, getIntent().getExtras().getLong("ID"));
+                } else {
+                    //  ee.addEvent(wve);
+                    DBMediumInsert dbmi = new DBMediumInsert();
+                    dbmi.insert(name, "" + year + "-" + month + "-" + day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes);
+                    //dbAccess.insertNewWeekViewEvent(name, "" + year + "-" + month + "-" + day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes);
+                }
+                // Intent intent = new Intent(this, MainActivity.class);
+
+                //startActivity(intent);
+
+            } else { //repeat event
+                /*Calendar today = Calendar.getInstance();
+                today.add(Calendar.DAY_OF_MONTH, -1 * (Calendar.DAY_OF_WEEK - 1));*/
+
+                ArrayList<SmallDate> datesArray = new ArrayList<>();
+
+                Calendar temp;// = today;
+                //temp.set
+
+                temp=Calendar.getInstance();
+                temp.add( Calendar.DAY_OF_WEEK, -(temp.get(Calendar.DAY_OF_WEEK)-1));
+
+                int numReps = 8;
+
+                if (sunday.isChecked()) {
+                    for (int i = 0; i < numReps; i++) {
+                        if (i > 0)
+                            temp.add(Calendar.DAY_OF_MONTH, 7);
+
+                        datesArray.add(new SmallDate(temp.get(Calendar.YEAR), temp.get(Calendar.MONTH) + 1,
+                                temp.get(Calendar.DAY_OF_MONTH)));
+                    }
+                }
+
+                temp=Calendar.getInstance();
+                temp.add( Calendar.DAY_OF_WEEK, -(temp.get(Calendar.DAY_OF_WEEK)-1));
+                temp.add(Calendar.DAY_OF_MONTH, 1);
+
+                if (monday.isChecked()) {
+                    for (int i = 0; i < numReps; i++) {
+                        if (i > 0)
+                            temp.add(Calendar.DAY_OF_MONTH, 7);
+
+                        datesArray.add(new SmallDate(temp.get(Calendar.YEAR), temp.get(Calendar.MONTH) + 1,
+                                temp.get(Calendar.DAY_OF_MONTH)));
+                    }
+                }
+
+                temp=Calendar.getInstance();
+                temp.add( Calendar.DAY_OF_WEEK, -(temp.get(Calendar.DAY_OF_WEEK)-1));
+                temp.add(Calendar.DAY_OF_MONTH, 2);
+
+
+                if (tuesday.isChecked()) {
+                    for (int i = 0; i < numReps; i++) {
+                        if (i > 0)
+                            temp.add(Calendar.DAY_OF_MONTH, 7);
+
+                        datesArray.add(new SmallDate(temp.get(Calendar.YEAR), temp.get(Calendar.MONTH) + 1,
+                                temp.get(Calendar.DAY_OF_MONTH)));
+                    }
+                }
+
+                temp=Calendar.getInstance();
+                temp.add( Calendar.DAY_OF_WEEK, -(temp.get(Calendar.DAY_OF_WEEK)-1));
+                temp.add(Calendar.DAY_OF_MONTH, 3);
+
+
+                if (wednesday.isChecked()) {
+                    for (int i = 0; i < numReps; i++) {
+                        if (i > 0)
+                            temp.add(Calendar.DAY_OF_MONTH, 7);
+
+                        datesArray.add(new SmallDate(temp.get(Calendar.YEAR), temp.get(Calendar.MONTH) + 1,
+                                temp.get(Calendar.DAY_OF_MONTH)));
+                    }
+                }
+
+                temp=Calendar.getInstance();
+                temp.add( Calendar.DAY_OF_WEEK, -(temp.get(Calendar.DAY_OF_WEEK)-1));
+                temp.add(Calendar.DAY_OF_MONTH, 4);
+
+                if (thursday.isChecked()) {
+                    for (int i = 0; i < numReps; i++) {
+                        if (i > 0)
+                            temp.add(Calendar.DAY_OF_MONTH, 7);
+
+                        datesArray.add(new SmallDate(temp.get(Calendar.YEAR), temp.get(Calendar.MONTH) + 1,
+                                temp.get(Calendar.DAY_OF_MONTH)));
+                    }
+                }
+
+                temp=Calendar.getInstance();
+                temp.add( Calendar.DAY_OF_WEEK, -(temp.get(Calendar.DAY_OF_WEEK)-1));
+                temp.add(Calendar.DAY_OF_MONTH, 5);
+
+                if (friday.isChecked()) {
+                    for (int i = 0; i < numReps; i++) {
+                        if (i > 0)
+                            temp.add(Calendar.DAY_OF_MONTH, 7);
+
+                        datesArray.add(new SmallDate(temp.get(Calendar.YEAR), temp.get(Calendar.MONTH) + 1,
+                                temp.get(Calendar.DAY_OF_MONTH)));
+                    }
+                }
+
+                temp=Calendar.getInstance();
+                temp.add( Calendar.DAY_OF_WEEK, -(temp.get(Calendar.DAY_OF_WEEK)-1));
+                temp.add(Calendar.DAY_OF_MONTH, 6);
+
+                if (saturday.isChecked()) {
+                    for (int i = 0; i < numReps; i++) {
+                        if (i > 0)
+                            temp.add(Calendar.DAY_OF_MONTH, 7);
+
+                        datesArray.add(new SmallDate(temp.get(Calendar.YEAR), temp.get(Calendar.MONTH) + 1,
+                                temp.get(Calendar.DAY_OF_MONTH)));
+                    }
+                }
+
+                String tempBusy = "N";
+                if (busy)
+                    tempBusy = "Y";
+
                 DBMediumInsert dbmi = new DBMediumInsert();
-                dbmi.insert(name, "" + year + "-" + month + "-" + day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes);
-                //dbAccess.insertNewWeekViewEvent(name, "" + year + "-" + month + "-" + day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes);
-            }
-            // Intent intent = new Intent(this, MainActivity.class);
+                //dbmi.insertRepeat(datesArray);
 
-            //startActivity(intent);
+                dbmi.insertRepeat(name, "", "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes, datesArray);
+
+
+                /*for (int i = 0; i < datesArray.size(); i++) {
+                    SmallDate sd = datesArray.get(i);
+                    //dbmi.insertRepeat(datesArray);
+                    DBMediumInsert dbmi = new DBMediumInsert();
+
+                    dbmi.insert(name, "" + sd.year + "-" + sd.month + "-" + sd.day, "M", String.format("%02d", startTimeHours) + ":" + String.format("%02d", startTimeMinute) + ":" + "00", String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute) + ":" + "00", tempBusy, notes);
+                }*/
+            }
 
             finish();
         } else {
@@ -291,6 +450,18 @@ public class EditEvent extends AppCompatActivity {
 
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
+        }
+    }
+
+    public class SmallDate {
+        public int year;
+        public int month;
+        public int day;
+
+        public SmallDate(int ye, int mo, int da) {
+            this.year = ye;
+            this.month = mo;
+            this.day = da;
         }
     }
 
@@ -325,7 +496,7 @@ public class EditEvent extends AppCompatActivity {
             return false;
         }
 
-        if (!validDate) {
+        if (!validDate && !repeat.isChecked()) {
             return false;
         }
 

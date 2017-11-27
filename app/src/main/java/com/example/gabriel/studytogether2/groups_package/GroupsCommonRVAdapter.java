@@ -1,5 +1,6 @@
 package com.example.gabriel.studytogether2.groups_package;
 
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.gabriel.studytogether2.MainActivityContainer;
 import com.example.gabriel.studytogether2.R;
 import com.example.gabriel.studytogether2.dbMedium_package.DBMediumGetGroups;
 
@@ -43,6 +45,8 @@ public class GroupsCommonRVAdapter extends RecyclerView.Adapter<GroupsCommonRVAd
         holder.title.setText(timeCards.get(position).getName());
         holder.desc.setText(timeCards.get(position).getDescription());
         holder.image.setText(timeCards.get(position).getSize());
+        if (!timeCards.get(position).usNames.contains(MainActivityContainer.getInstance().getUsername()))
+            holder.cv.setCardBackgroundColor(Color.rgb(239, 147, 147));
     }
 
     @Override

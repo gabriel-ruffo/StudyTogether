@@ -8,7 +8,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.xml.transform.Result;
 
@@ -150,6 +152,18 @@ public class DatabaseAccess {
 
     public ArrayList<String> getFreeEvents(ArrayList<String> uNames) {
 
+        Calendar beginning = Calendar.getInstance();
+        Calendar ending = Calendar.getInstance();
+        beginning.add(Calendar.DAY_OF_MONTH, -1);
+        ending.add(Calendar.DAY_OF_MONTH, 7);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+
+        String be = format.format(beginning.getTime());
+        String en = format.format(ending.getTime());
+
+
         //String csvRS = "";
         ArrayList<Integer> sids = new ArrayList<>();
 
@@ -181,7 +195,9 @@ public class DatabaseAccess {
             try {
                 Class.forName(driver);
                 Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery("select * from single_event where schedule_id=" + sids.get(i) + " and busy=\"N\"");
+                String exStmt = "select * from single_event where schedule_id=" + sids.get(i) + " and busy=\"N\"";
+                exStmt += " and date > be and date < end";
+                ResultSet rs = stmt.executeQuery(exStmt);
 
                 // splitting on '::'
                 //int index = 0;

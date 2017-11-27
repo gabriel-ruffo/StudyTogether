@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.alamkanak.weekview.WeekViewEvent;
 import com.example.gabriel.studytogether2.CalculateCommonTime;
+import com.example.gabriel.studytogether2.MainActivityContainer;
 import com.example.gabriel.studytogether2.R;
 import com.example.gabriel.studytogether2.dbMedium_package.DBMediumDeleteGroup;
 import com.example.gabriel.studytogether2.dbMedium_package.DBMediumGetFree;
@@ -96,5 +97,11 @@ public class GroupScreen extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        if (MainActivityContainer.getInstance().getMainActivity().returnFromCT)
+            finish();
+    }
 }

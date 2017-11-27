@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.alamkanak.weekview.WeekViewEvent;
 import com.example.gabriel.studytogether2.CalculateCommonTime;
+import com.example.gabriel.studytogether2.MainActivityContainer;
 import com.example.gabriel.studytogether2.R;
 
 import java.util.ArrayList;
@@ -27,28 +29,35 @@ implements GroupsRVAdapter.ListItemClickListener{
         setContentView(R.layout.activity_groups_common_time);
 
         getSupportActionBar().setTitle("Common Events");
+        TextView nct = (TextView) findViewById(R.id.tv_no_common);
+        nct.setVisibility(View.GONE);
 
-        RecyclerView rv = (RecyclerView) findViewById(R.id.rv_common_times);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        rv.setLayoutManager(llm);
+        if (commonTimes.size() == 0) {
+            nct.setVisibility(View.VISIBLE);
+        } else {
+
+            RecyclerView rv = (RecyclerView) findViewById(R.id.rv_common_times);
+            LinearLayoutManager llm = new LinearLayoutManager(this);
+            rv.setLayoutManager(llm);
 
         /* adapter = new RVAdapter(persons);
         rv.setAdapter(adapter);*/
-        initializeData();
+            initializeData();
 
-        // Set the adapter
-        if (rv instanceof RecyclerView) {
-            Context context = this;
-            //RecyclerView recyclerView = (RecyclerView) view;
+            // Set the adapter
+            if (rv instanceof RecyclerView) {
+                Context context = this;
+                //RecyclerView recyclerView = (RecyclerView) view;
             /*if (mColumnCount <= 1) {
                 rv.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 rv.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }*/
-            GroupsCommonRVAdapter gcrva = new GroupsCommonRVAdapter(timeCards, this);
-            //GroupsRVAdapter grva = new GroupsRVAdapter(groups, this);
-            rv.setAdapter(gcrva);
+                GroupsCommonRVAdapter gcrva = new GroupsCommonRVAdapter(timeCards, this);
+                //GroupsRVAdapter grva = new GroupsRVAdapter(groups, this);
+                rv.setAdapter(gcrva);
 
+            }
         }
 
         /*FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_group_add);
@@ -175,7 +184,22 @@ implements GroupsRVAdapter.ListItemClickListener{
 
             for (int i = 0; i < usNames.size(); i++) {
                 String tmpU = usNames.get(i).split("@")[0];
-                desc += /*usNames.get(i)*/ tmpU + ", ";
+                desc += /*usNames.get(i)*/ tmpU;
+
+                if (i < usNames.size() - 1)
+                    desc += ", ";
+            }
+
+            return desc;
+        }
+
+        public String getDescriptionTwo() {
+
+            String desc = "";
+
+            for (int i = 0; i < usNames.size(); i++) {
+                String tmpU = usNames.get(i);
+                desc += /*usNames.get(i)*/ tmpU + "\n";
             }
 
             return desc;
@@ -185,6 +209,9 @@ implements GroupsRVAdapter.ListItemClickListener{
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (MainActivityContainer.getInstance().getMainActivity().returnFromCT)
+            finish();
         //finish();
     }
 

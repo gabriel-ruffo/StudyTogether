@@ -10,12 +10,20 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Members:"/>
+        android:textStyle="bold"
+            android:text="Members:"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/tv_gs_added_members"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="temp"/>
+        android:hint="temp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textSize="16sp"/>
 
 </LinearLayout>
