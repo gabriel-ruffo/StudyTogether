@@ -553,7 +553,7 @@ public class DatabaseAccess {
         int sid = MainActivityContainer.getInstance().getSID();
         String query = "SELECT event_id FROM single_event WHERE (schedule_id = " + sid +
                 " AND date=\"" + date + "\") AND (time_start >= \'" + time_start + "\') AND" +
-                " (time_start < \'" + time_end + "\' AND time_end > \'" + time_end + "\')";
+                " (time_start <= \'" + time_end + "\' AND time_end > \'" + time_end + "\')";
 
         try {
             Statement statement = connection.createStatement();
@@ -571,7 +571,7 @@ public class DatabaseAccess {
     private int lowerOverlappingEvent(String date, String time_start, String time_end) {
         int sid = MainActivityContainer.getInstance().getSID();
         String query = "SELECT event_id FROM single_event WHERE (schedule_id = " + sid +
-                " AND date=\"" + date + "\") AND (time_end < \'" + time_end + "\') AND" +
+                " AND date=\"" + date + "\") AND (time_end <= \'" + time_end + "\') AND" +
                 " (time_start < \'" + time_start + "\' AND time_end >= \'" + time_start + "\')";
 
         try {

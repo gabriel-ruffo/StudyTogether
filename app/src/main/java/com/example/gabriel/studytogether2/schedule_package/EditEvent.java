@@ -510,12 +510,16 @@ public class EditEvent extends AppCompatActivity {
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.radio_busy:
-                if (checked)
+                if (checked) {
+                    rb_free.setChecked(false);
                     busy = true;
+                }
                     break;
             case R.id.radio_free:
-                if (checked)
+                if (checked) {
+                    rb_busy.setChecked(false);
                     busy = false;
+                }
                     break;
         }
     }
