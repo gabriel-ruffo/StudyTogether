@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.gabriel.studytogether2.groups_package.CreateGroup">
+    tools:context="com.example.gabriel.studytogether2.groups_package.CreateGroup"
+    android:padding="16dp">
 
 
 
@@ -34,6 +35,6 @@
         android:id="@+id/tv_added_members"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="temp"/>
+        android:hint="Added members appear here"/>
 
 </LinearLayout>
