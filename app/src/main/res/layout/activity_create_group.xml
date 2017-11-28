@@ -12,28 +12,42 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Member:"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Member"
+            android:textSize="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:visibility="gone"/>
 
     <EditText
         android:id="@+id/et_new_member"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:hint="Member Name"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
-        android:onClick="addMember"/>
+        android:onClick="addMember"
+        android:layout_gravity="right"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_added_members"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="temp"/>
+        android:hint="No members yet"
+        android:textSize="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"/>
 
 </LinearLayout>
