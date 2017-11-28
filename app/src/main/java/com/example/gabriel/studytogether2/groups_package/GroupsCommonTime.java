@@ -32,6 +32,8 @@ implements GroupsRVAdapter.ListItemClickListener{
         TextView nct = (TextView) findViewById(R.id.tv_no_common);
         nct.setVisibility(View.GONE);
 
+        initializeData();
+
         if (commonTimes.size() == 0) {
             nct.setVisibility(View.VISIBLE);
         } else {
@@ -42,7 +44,7 @@ implements GroupsRVAdapter.ListItemClickListener{
 
         /* adapter = new RVAdapter(persons);
         rv.setAdapter(adapter);*/
-            initializeData();
+            //initializeData();
 
             // Set the adapter
             if (rv instanceof RecyclerView) {
@@ -203,6 +205,15 @@ implements GroupsRVAdapter.ListItemClickListener{
             }
 
             return desc;
+        }
+
+        public boolean hasUsername(String tempName) {
+            for (int i = 0; i < usNames.size(); i++) {
+                if (usNames.get(i).equals(tempName))
+                    return true;
+            }
+
+            return false;
         }
     }
 

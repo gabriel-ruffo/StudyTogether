@@ -39,14 +39,23 @@ public class GroupsCommonRVAdapter extends RecyclerView.Adapter<GroupsCommonRVAd
         return pvh;
     }
 
+    String tempName = MainActivityContainer.getInstance().getUsername();
+
     @Override
     public void onBindViewHolder(TimeCardViewHolder holder, int position) {
 
         holder.title.setText(timeCards.get(position).getName());
         holder.desc.setText(timeCards.get(position).getDescription());
         holder.image.setText(timeCards.get(position).getSize());
-        if (!timeCards.get(position).usNames.contains(MainActivityContainer.getInstance().getUsername()))
+
+        boolean checkBool = !timeCards.get(position).hasUsername(tempName);
+
+        if (checkBool) {
             holder.cv.setCardBackgroundColor(Color.rgb(239, 147, 147));
+        }
+        /*
+        if (!timeCards.get(position).usNames.contains(MainActivityContainer.getInstance().getUsername()))
+            holder.cv.setCardBackgroundColor(Color.rgb(239, 147, 147));*/
     }
 
     @Override

@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
         mac.setMain(this);
 
+
+
         returnFromCT = false;
 
         Toast.makeText(this, "welcome " + mac.getUsername().split("@")[0], Toast.LENGTH_LONG).show();
@@ -118,6 +120,13 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavItemListener());
+
+        View headerLayout = navigationView.getHeaderView(0); // 0-index header
+        /*View headerLayout =
+                navigationView.inflateHeaderView(R.layout.navigation_header);*/
+
+        TextView textView = (TextView) headerLayout.findViewById(R.id.ProfileName);
+        textView.setText(mac.getUsername());
     }
 
 

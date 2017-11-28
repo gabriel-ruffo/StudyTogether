@@ -62,17 +62,22 @@ public class CreateGroup extends AppCompatActivity {
 
     public void doCreate() {
         String[] groupMembers = exMembers.getText().toString().split("\n");
-        ArrayList<String> temp = new ArrayList<>();
-        for (int i = 0; i < groupMembers.length; i++) {
-            if (groupMembers[i].length() > 0)
-                temp.add(groupMembers[i]);
+
+        if (groupMembers[0].length() > 0) {
+            ArrayList<String> temp = new ArrayList<>();
+            for (int i = 0; i < groupMembers.length; i++) {
+                if (groupMembers[i].length() > 0)
+                    temp.add(groupMembers[i]);
+            }
+
+            temp.add(MainActivityContainer.getInstance().getUsername());
+
+            DBMediumCreateGroup dbmcg = new DBMediumCreateGroup();
+            dbmcg.createGroup(temp);
+            finish();
+        } else {
+            Toast.makeText(this, "Add users to make group", Toast.LENGTH_LONG).show();
         }
-
-        temp.add(MainActivityContainer.getInstance().getUsername());
-
-        DBMediumCreateGroup dbmcg = new DBMediumCreateGroup();
-        dbmcg.createGroup(temp);
-        finish();
     }
 
     public void addMember(View v) {
@@ -81,6 +86,10 @@ public class CreateGroup extends AppCompatActivity {
         String tempName = newMember.getText().toString();
 
         boolean alreadyAdded = false;
+
+        if (tempName.equals(MainActivityContainer.getInstance().getUsername()))
+            alreadyAdded = true;
+
 
         for (int i = 0; i < existingMembers.length; i++) {
             if (tempName.equals(existingMembers[i]))
@@ -96,6 +105,7 @@ public class CreateGroup extends AppCompatActivity {
     public void doneChecking(boolean userExists, String username) {
         if (userExists) {
             userList.setText((userList.getText() + "\n" + username).trim());
+            newMember.setText("");
         } else {
             Toast.makeText(this, "invalid username", Toast.LENGTH_SHORT).show();
         }

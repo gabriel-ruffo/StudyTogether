@@ -7,6 +7,7 @@ import com.alamkanak.weekview.WeekViewEvent;
 import com.example.gabriel.studytogether2.groups_package.GroupScreen;
 import com.example.gabriel.studytogether2.groups_package.GroupsCommonTime;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -127,10 +128,16 @@ public class CalculateCommonTime {
 
         for (int i = 0; i < cevents.size(); i++) {
             Event temp = cevents.get(i);
-            if (temp.users.size() > 1) {
+            SimpleDateFormat format = new SimpleDateFormat("hh:mm");
+            String tmpStart = format.format(temp.start.getTime());
+            String tmpEnd = format.format(temp.end.getTime());
+            if (temp.users.size() > 1 &&
+                    tmpStart.compareTo(tmpEnd) != 0) {
                 fevents.add(temp);
             }
         }
+
+        Collections.sort(fevents);
     }
 
     private void initializeVars() {
@@ -156,7 +163,7 @@ public class CalculateCommonTime {
         events.add(wve);
     }
 
-    public class Event {
+    public class Event implements Comparable<Event> {
         public int userId;
         public String username;
         public ArrayList<Integer> users;
@@ -177,6 +184,17 @@ public class CalculateCommonTime {
         public void addUser(int uid, String tempU) {
             users.add(uid);
             usersNames.add(tempU);
+        }
+
+        @Override
+        public int compareTo(@NonNull Event o) {
+            if (users.size() > o.users.size())
+                return -1;
+
+            if (users.size() < o.users.size())
+                return 1;
+
+            return 0;
         }
     }
 
