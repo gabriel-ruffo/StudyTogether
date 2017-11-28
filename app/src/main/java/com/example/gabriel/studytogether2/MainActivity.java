@@ -3,7 +3,11 @@ package com.example.gabriel.studytogether2;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
@@ -27,13 +31,18 @@ import com.example.gabriel.studytogether2.schedule_package.CalendarFragment;
 import com.example.gabriel.studytogether2.groups_package.GroupFragment;
 import com.example.gabriel.studytogether2.fragments.dummy.DummyContent;
 import com.example.gabriel.studytogether2.groupActivities.ChatActivity;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInApi;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
-public class MainActivity extends AppCompatActivity implements CalendarFragment.OnFragmentInteractionListener, GroupFragment.OnListFragmentInteractionListener
-{
+public class MainActivity extends AppCompatActivity implements CalendarFragment.OnFragmentInteractionListener, GroupFragment.OnListFragmentInteractionListener {
     //small change
 
     private Toast toastMsg;
-
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
     public DBMediumGet dbm;
     public DBMediumGetGroups dbmgg;
     public boolean returnFromCT;
@@ -52,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
      * The {@link ViewPager} that will host the section contents.
      */
     private MyViewPager mViewPager;
+    private NavigationView navigationView;
     public ProgressBar spinner;
 
 
@@ -66,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
             String tUsername = getIntent().getExtras().getString("EMAIL");
             mac.setSID(sid);
             mac.setUsername(tUsername);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
         spinner = (ProgressBar) findViewById(R.id.pb_group_fragment);
@@ -100,6 +110,14 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.main_content);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavItemListener());
     }
 
 
@@ -115,12 +133,13 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+
+        if (mToggle.onOptionsItemSelected(item)) {
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -262,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
             switch (position) {
                 case 0:
                     return groupFragment;
-                    //return PlaceholderFragment.newInstance(position);
+                //return PlaceholderFragment.newInstance(position);
                 case 1:
                     CalendarFragment c = new CalendarFragment();
                     c.secAdaptor = mSectionsPagerAdapter;
@@ -298,5 +317,19 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
             }
             return null;
         }
+    }
+
+    private class NavItemListener implements NavigationView.OnNavigationItemSelectedListener {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            if (item.getItemId() == R.id.logout) {
+                logoutAccount();
+            }
+            return false;
+        }
+    }
+
+    private void logoutAccount() {
+        Toast.makeText(this.getBaseContext(), "Logout", Toast.LENGTH_SHORT).show();
     }
 }
