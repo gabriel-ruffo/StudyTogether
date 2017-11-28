@@ -64,20 +64,24 @@ public class DatabaseAccess {
         String csvRS = "";
         try {
             Class.forName(driver);
-            Statement stmt = connection.createStatement();
-            String s = "select user.schedule_id from user where user.email=\"" + email + "\"";
-            ResultSet rs = stmt.executeQuery(s);
+            if (connection != null) {
+                Statement stmt = connection.createStatement();
+                String s = "select user.schedule_id from user where user.email=\"" + email + "\"";
+                ResultSet rs = stmt.executeQuery(s);
 
-            while (rs.next()) {
-                csvRS += rs.getString(1);
-            }
-            // splitting on '::'
+                while (rs.next()) {
+                    csvRS += rs.getString(1);
+                }
+                // splitting on '::'
             /*while (rs.next()) {
                 csvRS += (rs.getString(1) + "**" + rs.getString(2) + "**"
                         + rs.getString(3) + "**" + rs.getString(4) + "**"
                         + rs.getString(5) + "**" + rs.getString(6) + "**"
                         + rs.getString(7) + "**" + rs.getString(8))+ "::";
             }*/
+            } else {
+                csvRS = "null*Connect";
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -391,9 +395,9 @@ public class DatabaseAccess {
     // commit stuff
     // TODO: Pass in actual 'day' argument, right now it's always 'M'
     public int insertNewWeekViewEvent(String name, String date, String day, String time_start, String time_end, String busy, String notes, int sid) {
-        int upper_event_id = upperOverlappingEvent(date, time_start, time_end);
-        int lower_event_id = lowerOverlappingEvent(date, time_start, time_end);
-        int middle_event_id = middleOverlappingEvent(date, time_start, time_end);
+        int upper_event_id = upperOverlappingEvent(date, time_start, time_end, sid);
+        int lower_event_id = lowerOverlappingEvent(date, time_start, time_end, sid);
+        int middle_event_id = middleOverlappingEvent(date, time_start, time_end, sid);
 
         if (upper_event_id != -1) {
             String other_busy = checkIfBusy(upper_event_id);
@@ -549,8 +553,8 @@ public class DatabaseAccess {
         return busy;
     }
 
-    private int upperOverlappingEvent(String date, String time_start, String time_end) {
-        int sid = MainActivityContainer.getInstance().getSID();
+    private int upperOverlappingEvent(String date, String time_start, String time_end, int sid) {
+        //int sid = MainActivityContainer.getInstance().getSID();
         String query = "SELECT event_id FROM single_event WHERE (schedule_id = " + sid +
                 " AND date=\"" + date + "\") AND (time_start >= \'" + time_start + "\') AND" +
                 " (time_start <= \'" + time_end + "\' AND time_end > \'" + time_end + "\')";
@@ -568,8 +572,8 @@ public class DatabaseAccess {
         return -1;
     }
 
-    private int lowerOverlappingEvent(String date, String time_start, String time_end) {
-        int sid = MainActivityContainer.getInstance().getSID();
+    private int lowerOverlappingEvent(String date, String time_start, String time_end, int sid) {
+        //int sid = MainActivityContainer.getInstance().getSID();
         String query = "SELECT event_id FROM single_event WHERE (schedule_id = " + sid +
                 " AND date=\"" + date + "\") AND (time_end <= \'" + time_end + "\') AND" +
                 " (time_start < \'" + time_start + "\' AND time_end >= \'" + time_start + "\')";
@@ -587,8 +591,8 @@ public class DatabaseAccess {
         return -1;
     }
 
-    private int middleOverlappingEvent(String date, String time_start, String time_end) {
-        int sid = MainActivityContainer.getInstance().getSID();
+    private int middleOverlappingEvent(String date, String time_start, String time_end, int sid) {
+        //int sid = MainActivityContainer.getInstance().getSID();
         String query = "SELECT event_id FROM single_event WHERE (schedule_id = " + sid +
                 " AND date=\"" + date + "\") AND (time_end > \'" + time_end + "\' AND time_start < \"" +
                 time_start + "\") AND" + " (time_start < \'" + time_start + "\' AND time_end > \'" +

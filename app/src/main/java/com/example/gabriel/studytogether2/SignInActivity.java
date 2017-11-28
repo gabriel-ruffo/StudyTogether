@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
@@ -23,6 +24,7 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
 
     private GoogleApiClient mGoogleApiClient;
     private Toast mToast;
+    private SignInButton sib;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,18 +43,25 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+        sib = (SignInButton) findViewById(R.id.sign_in_button);
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
     }
 
+    private boolean takeClicks = true;
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
-                break;
-            // ...
-        }
+        //if (takeClicks) {
+          //  takeClicks = false;
+            //sib.setEnabled(false);
+            switch (v.getId()) {
+                case R.id.sign_in_button:
+                    signIn();
+                    break;
+                // ...
+            }
+        //}
         /*
         Intent signInIntent = new Intent(this, MainActivity.class);
         startActivity(signInIntent);
@@ -106,6 +115,8 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         } else {
             // Signed out, show unauthenticated UI.
             //updateUI(false);
+            //takeClicks = true;
+            //sib.setEnabled(true);
             if(mToast != null){
                 mToast.cancel();
             }
@@ -115,15 +126,20 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     public void loadFinished(String schedule_id) {
-        if (schedule_id.length() > 0) {
-            Intent signInIntent = new Intent(this, MainActivity.class);
-            signInIntent.putExtra("SID", Integer.parseInt(schedule_id));
-            signInIntent.putExtra("EMAIL", email);
-            startActivity(signInIntent);
-        } else {
-            DBMediumInsertUser dbmiu = new DBMediumInsertUser(this);
-            dbmiu.insertNewEmail(email);
-        }
+        if (schedule_id.equals("null*Connect")) {
+            //sib.setEnabled(true);
+            //takeClicks = true;
+            Toast.makeText(this, "Error occurred, try again", Toast.LENGTH_SHORT).show();
+        } else if (schedule_id.length() > 0) {
+                Intent signInIntent = new Intent(this, MainActivity.class);
+                signInIntent.putExtra("SID", Integer.parseInt(schedule_id));
+                signInIntent.putExtra("EMAIL", email);
+                startActivity(signInIntent);
+            } else {
+                DBMediumInsertUser dbmiu = new DBMediumInsertUser(this);
+                dbmiu.insertNewEmail(email);
+            }
+
     }
 
     public void doneInsertingUser() {

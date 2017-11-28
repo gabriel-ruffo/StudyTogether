@@ -206,6 +206,15 @@ implements GroupsRVAdapter.ListItemClickListener{
 
             return desc;
         }
+
+        public boolean hasUsername(String tempName) {
+            for (int i = 0; i < usNames.size(); i++) {
+                if (usNames.get(i).equals(tempName))
+                    return true;
+            }
+
+            return false;
+        }
     }
 
     @Override
