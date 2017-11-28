@@ -18,7 +18,7 @@
         android:layout_marginBottom="30dp"
         android:layout_marginTop="10dp"
         android:layout_row="0"
-        android:text="Title"
+        android:hint="Title"
         android:textSize="@dimen/tSize2" />
 
     <LinearLayout
