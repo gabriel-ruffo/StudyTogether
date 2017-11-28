@@ -119,6 +119,10 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
             Intent signInIntent = new Intent(this, MainActivity.class);
             signInIntent.putExtra("SID", Integer.parseInt(schedule_id));
             signInIntent.putExtra("EMAIL", email);
+
+            GlobalState gs = ((GlobalState) getApplicationContext());
+            gs.setGoogleApiClient(mGoogleApiClient);
+
             startActivity(signInIntent);
         } else {
             DBMediumInsertUser dbmiu = new DBMediumInsertUser(this);
