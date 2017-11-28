@@ -402,7 +402,7 @@ public class DatabaseAccess {
             if (busy.equals("Y") && other_busy.equals("Y")) {
                 // TODO: Charlesy -- Respond with Toast("There's already a busy event here!");
                 return 0;
-            } else if (busy.equals("Y") && other_busy.equals("N")) {
+            } else if (busy.equals("Y") && other_busy.equals("N")) { //*
                 // Case 2: busy && free
                 int ret_val = updateEventUpperEnd(upper_event_id, time_end);
                 try {
@@ -552,7 +552,7 @@ public class DatabaseAccess {
     private int upperOverlappingEvent(String date, String time_start, String time_end) {
         int sid = MainActivityContainer.getInstance().getSID();
         String query = "SELECT event_id FROM single_event WHERE (schedule_id = " + sid +
-                " AND date=\"" + date + "\") AND (time_start > \'" + time_start + "\') AND" +
+                " AND date=\"" + date + "\") AND (time_start >= \'" + time_start + "\') AND" +
                 " (time_start < \'" + time_end + "\' AND time_end > \'" + time_end + "\')";
 
         try {
@@ -572,7 +572,7 @@ public class DatabaseAccess {
         int sid = MainActivityContainer.getInstance().getSID();
         String query = "SELECT event_id FROM single_event WHERE (schedule_id = " + sid +
                 " AND date=\"" + date + "\") AND (time_end < \'" + time_end + "\') AND" +
-                " (time_start < \'" + time_start + "\' AND time_end > \'" + time_start + "\')";
+                " (time_start < \'" + time_start + "\' AND time_end >= \'" + time_start + "\')";
 
         try {
             Statement statement = connection.createStatement();
