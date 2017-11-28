@@ -13,6 +13,7 @@ import com.example.gabriel.studytogether2.groups_package.GroupsCommonDetail;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 /**
@@ -53,8 +54,12 @@ public class DBMediumMassInsert implements LoaderManager.LoaderCallbacks<Integer
         String timeFormat = "hh:mm:ss";
         SimpleDateFormat sfdTime = new SimpleDateFormat(timeFormat, Locale.US);
 
-        time_start = sfdTime.format(ev.start.getTime());
-        time_end = sfdTime.format(ev.end.getTime());
+        time_start = String.format("%02d", ev.start.get(Calendar.HOUR_OF_DAY)) + ":" +
+                String.format("%02d", ev.start.get(Calendar.MINUTE)) + ":00";
+        time_end = String.format("%02d", ev.end.get(Calendar.HOUR_OF_DAY)) + ":" +
+                String.format("%02d", ev.end.get(Calendar.MINUTE)) + ":00";
+        /*time_start = sfdTime.format(ev.start.getTime());
+        time_end = sfdTime.format(ev.end.getTime());*/
         busy = "Y";
         notes = "auto-created group event";
 

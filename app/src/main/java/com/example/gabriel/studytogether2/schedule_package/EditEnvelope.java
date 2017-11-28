@@ -4,10 +4,12 @@ import android.graphics.Color;
 
 import com.alamkanak.weekview.WeekViewEvent;
 import com.example.gabriel.studytogether2.DatabaseAccess;
+import com.example.gabriel.studytogether2.dbMedium_package.DBMediumGet;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 /**
  * Created by Charley on 10/10/17.
  */
@@ -23,10 +25,15 @@ public class EditEnvelope {
     public EditEnvelope() {
     }
 
+    //DBMediumGet.SmallPackage sp = null;
+
+    boolean busy = false;
+    String notes = "";
+
     public ArrayList<WeekViewEvent> populateEvents(boolean isSingle, long id) {
         eventList = new ArrayList<>();
         //if (dba == null)
-            dba = new DatabaseAccess();
+        dba = new DatabaseAccess();
         String allEvents_raw = "";
         if (isSingle) {
             allEvents_raw = dba.getSingleEvent(id);
@@ -50,14 +57,32 @@ public class EditEnvelope {
                 eventToAdd = new WeekViewEvent(Long.parseLong(temp[0]), temp[1], startTime, endTime);
                 // logic to create a new event
 
-                if (temp[6].equals("Y"))
+                //boolean busy = false;
+                busy = false;
+
+
+                if (temp[6].equals("Y")) {
                     eventToAdd.setColor(Color.rgb(239, 147, 147));
+                    busy = true;
+                }
+
+                if (temp.length > 7)
+                    notes = temp[7];
+                //sp = new DBMediumGet.SmallPackage(busy, temp[7]);
 
                 addEvent(eventToAdd);
             }
         }
 
         return eventList;
+    }
+
+    public boolean getBusy() {
+        return busy;
+    }
+
+    public String getNotes() {
+        return notes;
     }
 
     private Calendar populateStartCalendar(String dateYMD, String time) {

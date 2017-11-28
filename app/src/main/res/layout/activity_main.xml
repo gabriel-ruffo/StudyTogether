@@ -8,9 +8,10 @@
     tools:context="com.example.gabriel.studytogether2.MainActivity">
 
 
+
     <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:orientation="vertical">
 
         <android.support.design.widget.AppBarLayout
@@ -34,6 +35,13 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_group_fragment"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

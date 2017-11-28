@@ -47,7 +47,7 @@ public class GroupsRVAdapter extends RecyclerView.Adapter<GroupsRVAdapter.GroupV
     @Override
     public void onBindViewHolder(GroupViewHolder holder, int position) {
 
-        holder.personName.setText(groups.get(position).getName());
+        //holder.personName.setText(groups.get(position).getName());
         holder.personAge.setText(groups.get(position).getDescription());
         holder.personPhoto.setImageResource(R.drawable.ic_add);
     }
@@ -68,7 +68,7 @@ public class GroupsRVAdapter extends RecyclerView.Adapter<GroupsRVAdapter.GroupV
             super(itemView);
             itemView.setOnClickListener(this);
             cv = (CardView) itemView.findViewById(R.id.cv_group);
-            personName = (TextView) itemView.findViewById(R.id.person_name);
+            //personName = (TextView) itemView.findViewById(R.id.person_name);
             personAge = (TextView) itemView.findViewById(R.id.person_age);
             personPhoto = (ImageView) itemView.findViewById(R.id.person_photo);
         }

@@ -4,7 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.gabriel.studytogether2.groups_package.GroupsCommonTime">
+
+    <TextView
+        android:id="@+id/tv_no_common"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:text="@string/no_common"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

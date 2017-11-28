@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
     private ActionBarDrawerToggle mToggle;
     public DBMediumGet dbm;
     public DBMediumGetGroups dbmgg;
+    public boolean returnFromCT;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
      */
     private MyViewPager mViewPager;
     private NavigationView navigationView;
+    public ProgressBar spinner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +79,14 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         } catch (Exception e) {
 
         }
+        spinner = (ProgressBar) findViewById(R.id.pb_group_fragment);
+        spinner.setVisibility(View.VISIBLE);
+
         mac.setMain(this);
+
+        returnFromCT = false;
+
+        Toast.makeText(this, "welcome " + mac.getUsername().split("@")[0], Toast.LENGTH_LONG).show();
 
         //int tempint = getIntent().getExtras().getInt("SID");
 
@@ -165,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (returnFromCT)
+            returnFromCT = false;
 
         /*if (mSectionsPagerAdapter != null) {
             //ditEnvelope.getInstance().resetCount();

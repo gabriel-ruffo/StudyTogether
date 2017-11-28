@@ -126,6 +126,7 @@ public class DBMediumGet implements LoaderManager.LoaderCallbacks<ArrayList<Week
 
                 if (editExisting) {
                     query = ee.populateEvents(true, queryid);
+                    sp = new SmallPackage(ee.getBusy(), ee.getNotes());
                 } else {
                     query = ee.populateEvents(false, mac.getSID());
                 }
@@ -138,6 +139,18 @@ public class DBMediumGet implements LoaderManager.LoaderCallbacks<ArrayList<Week
                 super.deliverResult(data);
             }
         };
+    }
+
+    private SmallPackage sp;
+
+    public class SmallPackage {
+        public boolean isBusy;
+        public String notes;
+
+        public SmallPackage(boolean ib, String not) {
+            isBusy = ib;
+            notes = not;
+        }
     }
 
     @Override
@@ -163,6 +176,8 @@ public class DBMediumGet implements LoaderManager.LoaderCallbacks<ArrayList<Week
             newEvent.putExtra("MONTH", start.get(Calendar.MONTH));
             newEvent.putExtra("DAY", start.get(Calendar.DAY_OF_MONTH));
             newEvent.putExtra("ID", wve.getId());
+            newEvent.putExtra("NOTES", sp.notes);
+            newEvent.putExtra("BUSY", sp.isBusy);
 
             mainActivity.startActivity(newEvent);
         } else {

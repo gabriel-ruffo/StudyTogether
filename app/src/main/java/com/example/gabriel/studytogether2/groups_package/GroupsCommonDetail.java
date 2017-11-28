@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.gabriel.studytogether2.MainActivity;
 import com.example.gabriel.studytogether2.MainActivityContainer;
 import com.example.gabriel.studytogether2.R;
 import com.example.gabriel.studytogether2.dbMedium_package.DBMediumMassInsert;
@@ -22,15 +23,15 @@ public class GroupsCommonDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_common_detail);
 
-        getSupportActionBar().setTitle("Common Time Details");
+        getSupportActionBar().setTitle("Common Event Details");
 
         time = (TextView) findViewById(R.id.tv_gcd_time);
         members = (TextView) findViewById(R.id.tv_gcd_members);
 
         ctc = GroupsCTContainer.getInstance().getTimeCard();
 
-        time.setText(ctc.getName());
-        members.setText(ctc.getSize() + " Members\n" + ctc.getDescription());
+        time.setText(ctc.getName() + "\n" + ctc.getSize() + " Users");
+        members.setText(ctc.getDescriptionTwo());
     }
 
     @Override
@@ -61,7 +62,9 @@ public class GroupsCommonDetail extends AppCompatActivity {
     }
 
     public void finishedMassInsert() {
-        MainActivityContainer.getInstance().getMainActivity().refreshCalendar();
+        MainActivity mainActivity = MainActivityContainer.getInstance().getMainActivity();
+        mainActivity.refreshCalendar();
+        mainActivity.returnFromCT = true;
         finish();
     }
 }
