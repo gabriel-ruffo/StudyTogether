@@ -196,7 +196,7 @@ public class DatabaseAccess {
                 Class.forName(driver);
                 Statement stmt = connection.createStatement();
                 String exStmt = "select * from single_event where schedule_id=" + sids.get(i) + " and busy=\"N\"";
-                exStmt += " and date > be and date < end";
+                exStmt += " and date > \"" + be + "\" and date < \"" +  en + "\"";
                 ResultSet rs = stmt.executeQuery(exStmt);
 
                 // splitting on '::'
