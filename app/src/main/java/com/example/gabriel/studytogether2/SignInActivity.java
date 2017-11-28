@@ -18,7 +18,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
+public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "SignInActivity";
 
@@ -43,6 +43,12 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+        mGoogleApiClient.connect();
+
+        GApiContainer gac = GApiContainer.getInstance();
+        gac.setGApi(mGoogleApiClient);
+
         sib = (SignInButton) findViewById(R.id.sign_in_button);
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -53,14 +59,14 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     @Override
     public void onClick(View v) {
         //if (takeClicks) {
-          //  takeClicks = false;
-            //sib.setEnabled(false);
-            switch (v.getId()) {
-                case R.id.sign_in_button:
-                    signIn();
-                    break;
-                // ...
-            }
+        //  takeClicks = false;
+        //sib.setEnabled(false);
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                signIn();
+                break;
+            // ...
+        }
         //}
         /*
         Intent signInIntent = new Intent(this, MainActivity.class);
@@ -117,7 +123,7 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
             //updateUI(false);
             //takeClicks = true;
             //sib.setEnabled(true);
-            if(mToast != null){
+            if (mToast != null) {
                 mToast.cancel();
             }
 
@@ -131,14 +137,16 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
             //takeClicks = true;
             Toast.makeText(this, "Error occurred, try again", Toast.LENGTH_SHORT).show();
         } else if (schedule_id.length() > 0) {
-                Intent signInIntent = new Intent(this, MainActivity.class);
-                signInIntent.putExtra("SID", Integer.parseInt(schedule_id));
-                signInIntent.putExtra("EMAIL", email);
-                startActivity(signInIntent);
-            } else {
-                DBMediumInsertUser dbmiu = new DBMediumInsertUser(this);
-                dbmiu.insertNewEmail(email);
-            }
+            Intent signInIntent = new Intent(this, MainActivity.class);
+            signInIntent.putExtra("SID", Integer.parseInt(schedule_id));
+            signInIntent.putExtra("EMAIL", email);
+            GlobalState gs = (GlobalState) getApplicationContext();
+            gs.setGoogleApiClient(mGoogleApiClient);
+            startActivity(signInIntent);
+        } else {
+            DBMediumInsertUser dbmiu = new DBMediumInsertUser(this);
+            dbmiu.insertNewEmail(email);
+        }
 
     }
 

@@ -131,9 +131,22 @@ public class CalculateCommonTime {
             SimpleDateFormat format = new SimpleDateFormat("hh:mm");
             String tmpStart = format.format(temp.start.getTime());
             String tmpEnd = format.format(temp.end.getTime());
-            if (temp.users.size() > 1 &&
-                    tmpStart.compareTo(tmpEnd) != 0) {
-                fevents.add(temp);
+
+            boolean alreadyExists = false;
+
+            for (int j = 0; j < fevents.size(); j++) {
+                Event o = fevents.get(j);
+                if (temp.start.compareTo(o.start) == 0 &&
+                        temp.end.compareTo(o.end) == 0) {
+                    alreadyExists = true;
+                }
+            }
+
+            if (!alreadyExists) {
+                if (temp.users.size() > 1 &&
+                        tmpStart.compareTo(tmpEnd) != 0) {
+                    fevents.add(temp);
+                }
             }
         }
 

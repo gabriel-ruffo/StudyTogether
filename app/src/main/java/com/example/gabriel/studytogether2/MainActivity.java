@@ -31,9 +31,12 @@ import com.example.gabriel.studytogether2.schedule_package.CalendarFragment;
 import com.example.gabriel.studytogether2.groups_package.GroupFragment;
 import com.example.gabriel.studytogether2.fragments.dummy.DummyContent;
 import com.example.gabriel.studytogether2.groupActivities.ChatActivity;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -64,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
     private NavigationView navigationView;
     public ProgressBar spinner;
 
+    GlobalState globalState;
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,11 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
         spinner.setVisibility(View.VISIBLE);
 
         mac.setMain(this);
+
+
+        //globalState = ((GlobalState) getApplicationContext());
+        mGoogleApiClient = GApiContainer.getInstance().getGApi();
+        //mGoogleApiClient.connect();
 
 
 
@@ -340,5 +350,18 @@ public class MainActivity extends AppCompatActivity implements CalendarFragment.
 
     private void logoutAccount() {
         Toast.makeText(this.getBaseContext(), "Logout", Toast.LENGTH_SHORT).show();
+        //GlobalState globalState = ((GlobalState) getApplicationContext());
+        //GoogleApiClient mGoogleApiClient = globalState.getGoogleApiClient();
+
+        //Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new SignOutCallback());
+    }
+
+    private class SignOutCallback implements ResultCallback<Status> {
+
+        @Override
+        public void onResult(@NonNull Status status) {
+            Intent signOutIntent = new Intent(getBaseContext(), SignInActivity.class);
+            startActivity(signOutIntent);
+        }
     }
 }
